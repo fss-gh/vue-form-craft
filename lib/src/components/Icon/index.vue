@@ -17,7 +17,7 @@ const iconComponent = computed(() => (icons as Record<string, any>)[props.name])
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('icon-render') {
   display: inline-block;

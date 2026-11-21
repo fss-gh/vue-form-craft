@@ -10,6 +10,7 @@
     @close="formValues = {}"
   >
     <FormRender
+      ref="formRef"
       v-model="formValues"
       class="preview-FormRender"
       :schema="designInstance.getSchema()"
@@ -29,8 +30,8 @@ const { Modal } = useUI()
 
 const designInstance = useDesignInstance()!
 
-
 const formValues = ref({})
+const formRef = ref<FormInstance>()
 
 const visible = defineModel<boolean>()
 

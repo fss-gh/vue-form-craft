@@ -38,7 +38,7 @@ import VueEsign from './VueEsign.vue'
 
 const { Button } = useUI()
 
-interface Props {
+export interface Props {
   lineWidth?: number
   lineColor?: string
   bgColor?: string

@@ -47,7 +47,7 @@ const handleNodeClick = (node: any) => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('tree') {
   position: relative;

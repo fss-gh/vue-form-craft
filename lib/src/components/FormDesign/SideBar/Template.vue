@@ -23,11 +23,13 @@
 
 <script setup lang="ts">
 import { Icon, Tree } from '@/components'
-import { useDesignInstance } from '@/hooks'
-import templates from '@/templates'
+import { useDesignInstance, useElements } from '@/hooks'
+import { getTemplates } from '@/templates'
 import { ns } from '@/utils'
 
 const designInstance = useDesignInstance()!
+
+const templates = getTemplates(useElements())
 
 const useTemplate = (template: any) => {
   designInstance.setSchema(template.schema)
@@ -36,7 +38,7 @@ const useTemplate = (template: any) => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('template-list') {
   .title {

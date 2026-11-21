@@ -1,8 +1,8 @@
-import { AntdAdapter, ElementPlusAdapter } from 'vue-form-craft/dev'
+import { AntdvNextAdapter, ElementPlusAdapter } from 'vue-form-craft/dev'
 
-export type uiConfig = 'elementPlus' | 'antd'
+export type uiConfig = 'elementPlus' | 'antdvNext'
 
 export const uiConfig = {
   el: { text: 'Element Plus', adapter: ElementPlusAdapter },
-  antd: { text: 'Ant Design Vue', adapter: AntdAdapter }
+  antdvNext: { text: 'Antdv Next', adapter: AntdvNextAdapter }
 }

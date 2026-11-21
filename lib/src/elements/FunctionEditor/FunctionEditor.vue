@@ -51,21 +51,25 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
-import { computed, nextTick, ref, shallowRef, watch } from 'vue'
-import { useUI } from '@/hooks'
+<script lang="ts">
 import type { ComponentBaseProps } from '@/types'
+
+export interface Props extends ComponentBaseProps {
+  paramTips?: { name: string; description?: string }[]
+}
+</script>
+
+<script setup lang="ts">
+import { computed, nextTick, ref, shallowRef, watch } from 'vue'
+import type { editor as MonacoEditor } from 'monaco-editor'
+import VueMonacoEditor from '@/components/MonacoEditor.vue'
+import { useUI } from '@/hooks'
 import { ns } from '@/utils'
 import { formatCode } from './formatCode'
 
 const { Button, Modal, Message } = useUI()
 
 const modelValue = defineModel<string>()
-
-interface Props extends ComponentBaseProps {
-  paramTips?: { name: string; description?: string }[]
-}
 
 const props = defineProps<Props>()
 
@@ -80,7 +84,12 @@ const hasValue = computed(() => {
 
 const dialogVisible = ref(false)
 const editingCode = ref('')
-const editorRef = shallowRef()
+const editorRef = shallowRef<MonacoEditor.IStandaloneCodeEditor>()
+
+type MonacoApi = typeof import('monaco-editor')
+type MonacoWithLegacyTypescript = MonacoApi & {
+  languages: MonacoApi['languages'] & { typescript?: MonacoApi['typescript'] }
+}
 
 // Monaco Editor 配置
 const editorOptions = {
@@ -102,17 +111,25 @@ const editorOptions = {
 }
 
 // 编辑器挂载时的回调
-const handleEditorMount = async (editor: any) => {
+const handleEditorMount = async (
+  editor: MonacoEditor.IStandaloneCodeEditor,
+  monacoInstance?: MonacoApi
+) => {
   editorRef.value = editor
 
-  // 添加自定义的智能提示
-  const monaco = (window as any).monaco
-  if (monaco) {
+  // Monaco 0.57 将 TypeScript 语言服务移动到 monaco.typescript，
+  // 旧版本仍位于 monaco.languages.typescript。
+  const monaco = (monacoInstance ??
+    (window as Window & { monaco?: MonacoApi }).monaco) as
+    | MonacoWithLegacyTypescript
+    | undefined
+  const typescript = monaco?.typescript ?? monaco?.languages?.typescript
+  if (typescript) {
     // 清除之前的类型定义
-    monaco.languages.typescript.javascriptDefaults.setExtraLibs([])
+    typescript.javascriptDefaults.setExtraLibs([])
 
     // 启用语法检查，但关闭语义检查
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    typescript.javascriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false, // 开启语义检查以支持类型推断
       noSyntaxValidation: false, // 保留语法检查
       diagnosticCodesToIgnore: [
@@ -124,8 +141,8 @@ const handleEditorMount = async (editor: any) => {
       ]
     })
 
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ES2020,
+    typescript.javascriptDefaults.setCompilerOptions({
+      target: typescript.ScriptTarget.ES2020,
       allowNonTsExtensions: true,
       noLib: false,
       allowJs: true,
@@ -139,7 +156,7 @@ const handleEditorMount = async (editor: any) => {
     })
 
     // 配置 JavaScript 格式化选项（自动添加分号）
-    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
+    typescript.javascriptDefaults.setEagerModelSync(true)
 
     // 添加类型定义（用于智能提示）
     const libSource = `
@@ -183,14 +200,14 @@ declare const $item: any;
 declare const $index: number;
 `
 
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, 'ts:filename/params.d.ts')
+    typescript.javascriptDefaults.addExtraLib(libSource, 'ts:filename/params.d.ts')
 
     // 同时为 TypeScript 添加
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(libSource, 'ts:filename/params.d.ts')
+    typescript.typescriptDefaults.addExtraLib(libSource, 'ts:filename/params.d.ts')
 
     // 配置格式化选项
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      ...monaco.languages.typescript.javascriptDefaults.getCompilerOptions(),
+    typescript.javascriptDefaults.setCompilerOptions({
+      ...typescript.javascriptDefaults.getCompilerOptions(),
       formatOnPaste: true,
       formatOnType: false
     })
@@ -364,7 +381,7 @@ watch(dialogVisible, async (isOpen) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('function-editor') {
   display: inline-block;

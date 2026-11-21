@@ -76,7 +76,7 @@ const breadcrumbPath = computed(() => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design-right') {
   width: 350px;

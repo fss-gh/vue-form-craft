@@ -20,6 +20,9 @@ const schema = {
   style: {
     width: '500px'
   },
+  initialValues: {
+    username: 'huyilin'
+  },
   items: [
     {
       label: '用户名',
@@ -29,8 +32,7 @@ const schema = {
         clearable: true,
         autocomplete: 'new-password'
       },
-      name: 'username',
-      initialValue: 'huyilin'
+      name: 'username'
     },
     {
       label: '密码',
@@ -44,7 +46,7 @@ const schema = {
   ]
 } satisfies FormSchema
 
-const onFinish = (values: Record<string, any>) => {
+const onFinish = () => {
   alert(JSON.stringify(formValues.value, null, 2))
 }
 </script>

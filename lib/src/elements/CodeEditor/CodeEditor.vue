@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
 import { computed } from 'vue'
+import VueMonacoEditor from '@/components/MonacoEditor.vue'
 import { useFormInstance } from '@/hooks'
 import { ns } from '@/utils'
 
@@ -84,7 +84,7 @@ const handleMount = (editor: any) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('code-editor-wrapper') {
   width: 100%;

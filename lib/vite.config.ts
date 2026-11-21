@@ -1,16 +1,23 @@
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
+import * as ts from 'typescript'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import libCss from 'vite-plugin-libcss'
+import { registerTS } from 'vue/compiler-sfc'
+
+// Vite 8 no longer registers TypeScript with @vue/compiler-sfc automatically.
+// It is required to resolve imported prop types and tsconfig path aliases.
+registerTS(() => ts)
 
 export default defineConfig({
   plugins: [
     vue(),
     dts({
-      outDir: './dist',
+      outDirs: './dist',
       pathsToAliases: true,
-      rollupTypes: true
+      bundleTypes: true,
+      processor: 'vue'
     }),
     libCss()
   ],
@@ -25,15 +32,15 @@ export default defineConfig({
       name: 'VueFormCraft', // umd全局变量名
       fileName: 'index' // 打包文件名
     },
-    rollupOptions: {
+    rolldownOptions: {
       // 确保外部化处理那些你不想打包进库的依赖
-      external: ['vue', 'element-plus', 'ant-design-vue'],
+      external: ['vue', 'element-plus', 'antdv-next'],
       output: {
         // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
         globals: {
           vue: 'Vue',
           'element-plus': 'ElementPlus',
-          'ant-design-vue': 'Antd'
+          'antdv-next': 'antd'
         },
         exports: 'named',
         chunkFileNames: 'lazy/[name]-[hash].js'

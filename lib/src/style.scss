@@ -26,11 +26,15 @@ $textColor3: var(--#{$namespace}-color-text-regular, #606266);
 
 // FormItem 组件
 @include ns('form-item') {
-  &.hide-label>.el-form-item__label {
+  &.hide-label > .el-form-item__label {
     display: none;
   }
 
-  &.hide-label>.ant-form-item-row>.ant-form-item-label {
+  &.hide-label > .ant-form-item-row > .ant-form-item-label {
+    display: none;
+  }
+
+  &.hide-message .ant-form-item-additional {
     display: none;
   }
 
@@ -54,7 +58,7 @@ $textColor3: var(--#{$namespace}-color-text-regular, #606266);
 
 // UI 库穿透样式集合
 @include ns('form-design') {
-  .el-button+.el-button {
+  .el-button + .el-button {
     margin-left: 0;
   }
 

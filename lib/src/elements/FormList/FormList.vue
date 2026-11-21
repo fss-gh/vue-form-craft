@@ -103,7 +103,7 @@ import { deepParse, ns } from '@/utils'
 
 const { Button, Card } = useUI()
 
-interface Props extends ComponentBaseProps {
+export interface Props extends ComponentBaseProps {
   allowAdd?: boolean
   allowReduce?: boolean
   minLines?: number
@@ -125,7 +125,7 @@ const props = withDefaults(defineProps<Props>(), {
   name: ''
 })
 
-const list = defineModel<Record<string, any>[]>({ default: [] })
+const list = defineModel<Record<string, any>[]>({ default: () => [] })
 
 const cIndex = ref(0)
 const listSnapshot = ref<Record<string, any>[]>([])
@@ -236,7 +236,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('formList') {
   position: relative;

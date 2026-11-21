@@ -69,7 +69,7 @@ export interface UploadFile {
   raw?: File
 }
 
-interface Props {
+export interface Props {
   action: string
   multiple?: boolean
   btnText?: string
@@ -178,7 +178,7 @@ const handleRemove = async (index: number) => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('upload') {
   .upload-dragger {

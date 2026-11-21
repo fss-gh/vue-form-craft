@@ -174,7 +174,7 @@ watch(fullScreen, (val) => {
 
 onBeforeMount(() => {
   // 修复初始schema
-  let schema = repirJsonSchema(getSchema())
+  const schema = repirJsonSchema(getSchema())
   setSchema(schema)
 
   // 如果jsonSchema和initJsonSchema不相等,说明传入了v-model
@@ -237,7 +237,7 @@ defineExpose(instance)
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design') {
   display: flex;

@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FormSchema } from 'dist'
+import type { FormSchema } from '@/types'
 import { cloneDeep, omit } from 'lodash'
 import {
   computed,
@@ -162,7 +162,7 @@ const context = computed(() => ({
 
 // 全局schema解析
 const parseSchema = computed(() => {
-  let schema: FormSchema = {
+  const schema: FormSchema = {
     ...cloneDeep(initSchema),
     ...innerSchema.value
   }
@@ -194,7 +194,7 @@ const formAttrs = computed(() => {
 })
 
 // 生成唯一的 formId（只在首次生成，后续保持不变）
-let autoFormId = `fm-form-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+const autoFormId = `fm-form-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 const formId = computed(() => {
   return innerSchema.value.formId || props.schema.formId || autoFormId
 })

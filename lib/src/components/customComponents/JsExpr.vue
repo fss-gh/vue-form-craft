@@ -46,7 +46,6 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { Icon } from '@/components'
 import { useAi, useDesignInstance, useUI } from '@/hooks'
 import { ns } from '@/utils'
 
@@ -156,7 +155,7 @@ ${aiPrompt.value}
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('js-expr-dialog') {
   .ai-section {

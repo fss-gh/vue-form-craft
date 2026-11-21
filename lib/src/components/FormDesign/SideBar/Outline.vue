@@ -76,7 +76,7 @@ const handleNodeClick = (data: any) => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('outline') {
   height: 100%;

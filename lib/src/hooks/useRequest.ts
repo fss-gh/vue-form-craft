@@ -32,7 +32,7 @@ const createFetchRequest = (): RequestFn => {
 
     try {
       return await res.json()
-    } catch (e) {
+    } catch {
       // 非 JSON 响应时直接返回文本
       return res.text()
     }

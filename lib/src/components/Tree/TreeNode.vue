@@ -97,7 +97,7 @@ watch(
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('tree-node-wrapper') {
   @include ns('tree-node') {

@@ -111,7 +111,7 @@ const rightBottomActions = [
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 @include ns('canvas-item') {
   padding-bottom: 0.1px;
   padding-top: 0.1px;

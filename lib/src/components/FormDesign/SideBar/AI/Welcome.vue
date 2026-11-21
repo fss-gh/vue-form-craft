@@ -52,7 +52,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/style';
+@use '@/style' as *;
 
 .welcome {
   padding: 10px;

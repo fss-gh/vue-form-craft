@@ -60,7 +60,7 @@ const handleAiClick = async () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('input-ai-icon') {
   font-size: 14px;

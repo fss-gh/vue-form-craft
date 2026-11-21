@@ -4,7 +4,7 @@
 
 ## 目标
 
-- **支持多 UI**：支持 Element-Plus / Arco / Ant Design Vue / Naive UI 等，甚至自定义组件库。
+- **支持多 UI**：支持 Element-Plus / Arco / Antdv Next / Naive UI 等，甚至自定义组件库。
 - 同一套JsonSchema协议，可以适配多套UI库，一键切换。
 - **保持单库发布**：继续使用一个 npm 包 `vue-form-craft`，UI 库由用户自行安装。
 - **渐进迁移**：兼容现有“以 element-plus 为主”的 schema，逐步演进为 UI 无关的抽象协议。
@@ -29,7 +29,7 @@
 - ✅ Switch（开关）- 已适配
 - ✅ Slider（滑块）- 已适配
 - ✅ Rate（评分）- 已适配
-- ✅ ColorPicker（颜色选择器）- 已适配（Ant Design Vue 使用原生 input[type=color] 降级）
+- ✅ ColorPicker（颜色选择器）- 已适配（使用 antdv-next ColorPicker）
 - ✅ InputNumber（数字输入框）- 已适配
 - ✅ Cascader（级联选择器）- 已适配
 
@@ -55,7 +55,7 @@
 
 ### 1. 提炼组件适配器协议
 
-根据组件的常用场景提炼出一个`Protocol`接口，包含props、slots（emits通过on开头的驼峰函数整合进props），要保证广泛使用的Vue UI库（Element Plus/Ant Design Vue等）都能支持这些参数，能在适配器里正确转换。
+根据组件的常用场景提炼出一个`Protocol`接口，包含props、slots（emits通过on开头的驼峰函数整合进props），要保证广泛使用的Vue UI库（Element Plus/Antdv Next等）都能支持这些参数，能在适配器里正确转换。
 
 要尽可能保证，后续再扩展其他UI库，都能适配这个组件`Protocol`。
 
@@ -176,22 +176,16 @@ const ElementPlusAdapter: UIAdapter = {
 export default ElementPlusAdapter
 ```
 
-#### Ant Design Vue 适配器示例
+#### Antdv Next 适配器示例
 
 ```typescript
-// uiAdapter/AntdAdapter.ts
-import { Button, Form, Input, Select } from 'ant-design-vue'
-import { defineComponent, h, ref } from 'vue'
-import type {
-  ButtonProtocol,
-  FormProtocol,
-  InputProtocol,
-  SelectProtocol,
-  UIAdapter
-} from '@/types/uiAdapter'
+// uiAdapter/AntdvNextAdapter.ts
+import { Input, Select } from 'antdv-next'
+import { defineComponent, h } from 'vue'
+import type { InputProtocol, SelectProtocol, UIAdapter } from '@/types/uiAdapter'
 
-const AntdAdapter: UIAdapter = {
-  // Ant Design Vue 的 Input 需要适配属性名称
+const AntdvNextAdapter: UIAdapter = {
+  // Antdv Next 的 Input 需要适配属性名称
   Input: defineComponent(
     (_, { slots, attrs }) => {
       const props = attrs as InputProtocol['props']
@@ -210,7 +204,8 @@ const AntdAdapter: UIAdapter = {
             allowClear: props.clearable,
             // showWordLimit -> showCount
             showCount: props.showWordLimit,
-            maxLength: props.maxlength
+            // antdv-next 使用小写 maxlength
+            maxlength: props.maxlength
           },
           slots
         )
@@ -243,7 +238,7 @@ const AntdAdapter: UIAdapter = {
   )
 }
 
-export default AntdAdapter
+export default AntdvNextAdapter
 ```
 
 ### 3. 使用方式
@@ -258,7 +253,7 @@ export default AntdAdapter
 
 ```typescript
 // main.ts
-import VueFormCraft, { AntdAdapter, ElementPlusAdapter } from 'vue-form-craft'
+import VueFormCraft, { AntdvNextAdapter, ElementPlusAdapter } from 'vue-form-craft'
 import { createApp } from 'vue'
 import App from './App.vue'
 // 方式3: 自定义适配器
@@ -269,9 +264,9 @@ const app = createApp(App)
 // 方式1: 使用默认的 Element-Plus (不传 ui 参数)
 app.use(VueFormCraft)
 
-// 方式2: 使用 Ant Design Vue
+// 方式2: 使用 Antdv Next
 app.use(VueFormCraft, {
-  ui: AntdAdapter
+  ui: AntdvNextAdapter
 })
 
 app.use(VueFormCraft, {
@@ -339,7 +334,7 @@ const value = ref('')
 
 ## 注意事项
 
-- 暂时先适配`Element-Plus`和`Ant Design Vue`，把这两个适配完美后，就可高效率的再扩展其他UI库。
+- 暂时先适配`Element-Plus`和`Antdv Next`，把这两个适配完美后，就可高效率的再扩展其他UI库。
 - 提炼出的每个组件`Protocol`，需要放到总的`UIAdapter`里，作为内置组件库的类型。 这个`UIAdapter`与UI库解耦，作为表单设计器的自有组件库抽象，其他UI库需要往这个接口适配
 - 对于方法调用类组件（如 Message、MessageBox），应该合并为一个对象，便于统一管理和调用
 - **映射优先，透传兜底**：
@@ -353,7 +348,7 @@ const value = ref('')
 - 对于不支持的属性，应该提供合理的降级方案
 - 所有组件必须通过 `useUI()` 获取，不能直接导入 UI 库组件
 - **实例方法暴露**：对于有实例方法的组件（如 Form、Table 等），必须通过 `ref` + `expose` 暴露底层组件的所有实例方法，确保外部可以调用这些方法
-- **Ant Design Vue 的 Tabs 组件特殊处理**：Tabs 会直接读取子节点 VNode 的 props，而不是等子组件渲染。因此需要在 Tabs 适配器的 slots.default 中手动修改子节点的 props，将 `label` 转换为 `tab`
+- **Antdv Next 的 Tabs / Collapse 组件特殊处理**：antdv-next 推荐使用 `items` 渲染标签页和折叠面板。适配器会在 `slots.default` 中读取 `TabPane` / `CollapseItem` 子节点的 props 和插槽，转换为对应的 `items` 数据
 - **类型提示**: 使用 TypeScript 时,切换 UI 库后类型提示保持一致
 - **插槽适配**: 不同 UI 库的插槽名称可能不同,需要在适配器中进行映射
 - **事件适配**: 事件名称和参数可能不同,需要在适配器中统一转换为协议定义的格式

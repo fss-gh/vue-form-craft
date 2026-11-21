@@ -17,7 +17,7 @@ import Header from './Header/index.vue'
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design-main') {
   flex: 1;

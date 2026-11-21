@@ -97,7 +97,7 @@ const handleClose = () => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design-left') {
   position: relative;

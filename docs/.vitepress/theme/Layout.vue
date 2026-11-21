@@ -4,7 +4,7 @@ import en from 'element-plus/es/locale/lang/en'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
-import { onMounted, provide } from 'vue'
+import { provide } from 'vue'
 
 const { lang } = useData()
 

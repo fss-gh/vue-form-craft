@@ -74,7 +74,7 @@ describe('FormRender Schema Test', () => {
     } satisfies FormSchema
 
     const values = ref({})
-    const wrapper = mount(FormRender, {
+    mount(FormRender, {
       props: {
         schema: schema,
         modelValue: values

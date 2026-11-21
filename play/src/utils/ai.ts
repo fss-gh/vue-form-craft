@@ -5,7 +5,7 @@ import type { AiGenerateFunction, AiGenerateParams } from 'vue-form-craft/dev'
 const model = new ChatOpenAI({
   configuration: { baseURL: 'https://elin521.cn:3002/v1' },
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  modelName: 'deepseek-ai/DeepSeek-V3.2'
+  model: 'deepseek-ai/DeepSeek-V3.2'
 })
 
 /**

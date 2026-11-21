@@ -13,7 +13,7 @@ AI 驱动的 Vue3 表单工具，核心由 `FormDesign`（可视化设计器） 
 - 支持数组字段收集（`FormList`）和深层嵌套
 - 支持校验规则（`required/min/max/pattern/builtin/custom/jsExpr`）
 - 支持 AI 辅助生成/修改表单 Schema
-- 支持扩展组件与多 UI 适配器（Element Plus / Ant Design Vue）
+- 支持扩展组件与多 UI 适配器（Element Plus / Antdv Next）
 
 ## 项目结构
 
@@ -49,13 +49,17 @@ app.use(VueFormCraft)
 app.mount('#app')
 ```
 
-如需切换为 Ant Design Vue：
+如需切换为 Antdv Next（需自行安装 `antdv-next`）：
+
+```bash
+npm i antdv-next
+```
 
 ```ts
-import { AntdAdapter } from 'vue-form-craft'
+import { AntdvNextAdapter } from 'vue-form-craft'
 
 app.use(VueFormCraft, {
-  ui: AntdAdapter
+  ui: AntdvNextAdapter
 })
 ```
 

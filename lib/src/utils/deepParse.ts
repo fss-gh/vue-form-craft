@@ -57,7 +57,7 @@ const templateParse = (str: string, context: Record<string, any>) => {
         return `{{${expr}}}`
       }
     })
-  } catch (e) {
+  } catch {
     // console.log({
     //   message: `模板转换错误：${str}`,
     //   context,

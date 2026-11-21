@@ -50,7 +50,7 @@ const handleJumpTo = (index: number) => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('history-list') {
   height: 100%;

@@ -4,6 +4,11 @@ import { vi } from 'vitest'
 import * as elements from '@/elements'
 import { $globals } from '@/symbol'
 
+// Monaco 本地初始化只用于浏览器，测试中不需要加载 monaco-editor
+vi.mock('@/utils/monaco', () => ({
+  setupMonaco: vi.fn()
+}))
+
 // Mock Monaco Editor - vi.mock 会被提升，所以需要在内部定义
 vi.mock('@guolao/vue-monaco-editor', () => {
   const MockMonacoEditor = {
@@ -22,6 +27,7 @@ vi.mock('@guolao/vue-monaco-editor', () => {
       isLoadFailed: { value: false }
     }),
     loader: {
+      config: vi.fn(),
       __getMonacoInstance: () => null
     }
   }

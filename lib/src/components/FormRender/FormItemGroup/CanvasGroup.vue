@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import Draggable from 'vuedraggable-es-fix'
+import { VDraggable as Draggable } from '@/utils/draggable'
 import { Icon } from '@/components'
 import { useDesignInstance } from '@/hooks'
 import { ns } from '@/utils'
@@ -106,7 +106,7 @@ const onUpdate = () => {
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('canvas-group') {
   position: relative;

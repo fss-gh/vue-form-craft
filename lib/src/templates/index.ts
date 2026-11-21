@@ -2,7 +2,6 @@ import basicSchema from '@/components/customComponents/Basic/schema'
 import optionsSchema from '@/components/customComponents/Options/schema'
 import rulesSchema from '@/components/customComponents/Rules/schema'
 import { formAttrSchema } from '@/config'
-import * as elements from '@/elements'
 import type { FormElement } from '@/types'
 import addressContact from './addressContact'
 import advancedLinkage from './advancedLinkage'
@@ -21,25 +20,31 @@ import searchFilter from './searchFilter'
 import userProfile from './userProfile'
 import valueLinkage from './valueLinkage'
 
-const elementConfigs = Object.keys(elements)
-  .map((key) => {
-    const element = (elements as Record<string, FormElement>)[key]
-    let order = element.order
-    if (element.type === 'layout') {
-      order += 100
-    }
-    if (element.type === 'assist') {
-      order += 200
-    }
-    return {
-      label: element.title,
-      schema: element.attrSchema,
-      description: '',
-      order,
-      type: element.type
-    }
-  })
-  .sort((a, b) => a.order - b.order)
+const getElementConfigs = (elements: Record<string, FormElement>) =>
+  Object.keys(elements)
+    .map((key) => {
+      const element = elements[key]
+      if (!element) {
+        console.error('Invalid form element export:', key)
+        return null
+      }
+      let order = element.order
+      if (element.type === 'layout') {
+        order += 100
+      }
+      if (element.type === 'assist') {
+        order += 200
+      }
+      return {
+        label: element.title,
+        schema: element.attrSchema,
+        description: '',
+        order,
+        type: element.type
+      }
+    })
+    .filter((item) => item !== null)
+    .sort((a, b) => a.order - b.order)
 
 export {
   addressContact,
@@ -58,7 +63,7 @@ export {
   valueLinkage
 }
 
-export default [
+export const getTemplates = (elements: Record<string, FormElement>) => [
   {
     label: '常见表单',
     children: [
@@ -170,7 +175,7 @@ export default [
         schema: optionsSchema,
         description: ''
       },
-      ...elementConfigs
+      ...getElementConfigs(elements)
     ]
   }
 ]

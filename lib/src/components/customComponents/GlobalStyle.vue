@@ -40,9 +40,8 @@
 </template>
 
 <script setup lang="ts">
-import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
 import { ref } from 'vue'
-import { Icon } from '@/components'
+import VueMonacoEditor from '@/components/MonacoEditor.vue'
 import { useAi, useUI } from '@/hooks'
 
 const { Button, Modal, Input, Message } = useUI()
@@ -100,8 +99,8 @@ const getFormDomStructure = (): {
   }
 
   // 优先查找设计模式下的表单（在 .fd-form 或 .form-design-canvas 中）
-  let formElement: Element | null = null
-  let formId = ''
+  let formElement: Element | null
+  let formId: string
 
   // 先尝试在设计器画布中查找
   const canvasForm = document.querySelector('.form-design-canvas [data-form-id]')

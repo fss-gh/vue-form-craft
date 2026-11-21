@@ -162,7 +162,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('unit-input') {
   display: flex;

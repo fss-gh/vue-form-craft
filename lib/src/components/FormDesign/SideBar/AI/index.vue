@@ -29,14 +29,19 @@
     <div class="sender">
       <Icon v-if="list.length" class="clear" name="clear" @click="handleClear" />
 
-      <Sender v-model="input" @submit="startSSE" @cancel="onCancel" :loading="inputLoading" />
+      <XSender
+        ref="senderRef"
+        @submit="startSSE"
+        @cancel="onCancel"
+        :loading="inputLoading"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
-import { BubbleList, Sender } from 'vue-element-plus-x'
+import { nextTick, ref, type Ref } from 'vue'
+import { BubbleList, XSender } from 'vue-element-plus-x'
 import type { BubbleListItemProps } from 'vue-element-plus-x/types/BubbleList'
 import { Icon } from '@/components'
 import generateSchemaPrompt from '@/config/generateSchemaPrompt.md?raw'
@@ -49,7 +54,7 @@ type BubbleItem = BubbleListItemProps & {
   role: 'user' | 'ai'
 }
 
-const input = ref('')
+const senderRef = ref<InstanceType<typeof XSender> | null>(null)
 
 const inputLoading = ref(false)
 
@@ -58,6 +63,12 @@ const list: Ref<BubbleItem[]> = ref([])
 const designInstance = useDesignInstance()!
 
 const { isAvailable, request, cancel } = useAi()
+
+const getInput = () => senderRef.value?.getModelValue().text.trim() ?? ''
+
+const setInput = (text: string) => {
+  senderRef.value?.setText(text)
+}
 
 // 提取 JSON 内容（去除 Markdown 代码块标记）
 const extractJson = (content: string): string => {
@@ -83,7 +94,9 @@ const extractJson = (content: string): string => {
 
 // AI生成表单
 const startSSE = async () => {
-  if (input.value === '') {
+  const userInput = getInput()
+
+  if (!userInput) {
     return
   }
 
@@ -94,7 +107,7 @@ const startSSE = async () => {
       {
         key: Date.now(),
         role: 'user',
-        content: input.value,
+        content: userInput,
         placement: 'end'
       },
       {
@@ -113,7 +126,7 @@ const startSSE = async () => {
     {
       key: Date.now(),
       role: 'user',
-      content: input.value,
+      content: userInput,
       placement: 'end'
     },
     {
@@ -124,8 +137,8 @@ const startSSE = async () => {
     }
   ]
 
-  const userInput = input.value
-  input.value = ''
+  senderRef.value?.clear()
+  inputLoading.value = true
 
   const current = list.value.at(-1)!
 
@@ -161,8 +174,9 @@ const startSSE = async () => {
   }
 }
 
-const handleItemClick = (item: string) => {
-  input.value = item
+const handleItemClick = async (item: string) => {
+  setInput(item)
+  await nextTick()
   startSSE()
 }
 
@@ -175,13 +189,14 @@ const footerConfig = [
   {
     icon: 'copy',
     onClick: (item: BubbleItem) => {
-      input.value = item.content!
+      setInput(item.content!)
     }
   },
   {
     icon: 'refresh',
-    onClick: (item: BubbleItem) => {
-      input.value = item.content!
+    onClick: async (item: BubbleItem) => {
+      setInput(item.content!)
+      await nextTick()
       startSSE()
     }
   }
@@ -189,12 +204,12 @@ const footerConfig = [
 
 const handleClear = () => {
   list.value = []
-  input.value = ''
+  senderRef.value?.clear()
 }
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design-ai') {
   height: 100%;

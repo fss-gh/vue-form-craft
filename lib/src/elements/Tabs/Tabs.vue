@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import Draggable from 'vuedraggable-es-fix'
+import { VDraggable as Draggable } from '@/utils/draggable'
 import { FormItemGroup } from '@/components'
 import { useDesignInstance, useFormInstance, useUI } from '@/hooks'
 import type { ComponentBaseProps, FormItemType } from '@/types'
@@ -131,7 +131,7 @@ if (design.value) {
 </script>
 
 <style scoped lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('tabs') {
   overflow: hidden;

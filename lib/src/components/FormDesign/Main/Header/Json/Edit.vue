@@ -15,9 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import { VueMonacoEditor } from '@guolao/vue-monaco-editor'
 import { cloneDeep } from 'lodash'
 import { onMounted, ref } from 'vue'
+import VueMonacoEditor from '@/components/MonacoEditor.vue'
 import { useUI } from '@/hooks'
 import type { FormSchema } from '@/types'
 import { ns, removeDesignKeys } from '@/utils'
@@ -51,7 +51,7 @@ const handleSave = () => {
     const parsedJson = JSON.parse(jsonString.value)
     emits('save', cloneDeep(parsedJson))
     Message.success('保存成功')
-  } catch (error) {
+  } catch {
     Message.error('JSON格式错误，请检查后重试')
   }
 }
@@ -72,7 +72,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('save-json-edit') {
   display: flex;

@@ -230,7 +230,7 @@ watch(
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-item') {
   &-label {

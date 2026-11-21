@@ -95,7 +95,7 @@ interface Props {
   defaultUnit?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   label: '边距',
   presets: () => ['auto', '0'],
   units: () => ['px', '%', 'em', 'rem'],
@@ -244,7 +244,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-@import '@/style.scss';
+@use '@/style' as *;
 
 @include ns('margin-input') {
   margin-bottom: 16px;

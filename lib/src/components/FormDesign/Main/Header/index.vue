@@ -114,7 +114,7 @@ const rightActions: PreviewAction[] = [
 </script>
 
 <style lang="scss">
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('form-design-header') {
   display: flex;

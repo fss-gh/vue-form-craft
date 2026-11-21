@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { cloneDeep } from 'lodash'
 import { computed, ref } from 'vue'
-import draggable from 'vuedraggable-es-fix'
+import { VDraggable as draggable } from '@/utils/draggable'
 import { ElementIcon, Icon } from '@/components'
 import { useDesignInstance, useElements, useUI } from '@/hooks'
 import type { FormElement, FormItemType } from '@/types'
@@ -135,7 +135,7 @@ const handleDbClick = (element: FormElement) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/style';
+@use '@/style' as *;
 
 @include ns('components') {
   .responsive-input {

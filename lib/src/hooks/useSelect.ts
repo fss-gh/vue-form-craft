@@ -117,17 +117,12 @@ const useSelect = (props: SelectProps) => {
   const selectChange = (val: any) => {
     const { multiple, name } = props
 
-    let valueData = {}
-
-    if (multiple && Array.isArray(val)) {
-      //多选就过滤出vals对应的源数据
-      valueData = currentOptions.value.filter((item) => {
-        return val.includes(item.value)
-      })
-    } else {
-      //单选找到单项对应的源数据
-      valueData = currentOptions.value.find((item) => item.value === val) || {}
-    }
+    const valueData =
+      multiple && Array.isArray(val)
+        ? //多选就过滤出vals对应的源数据
+          currentOptions.value.filter((item) => val.includes(item.value))
+        : //单选找到单项对应的源数据
+          currentOptions.value.find((item) => item.value === val) || {}
 
     //如果接到了selectData，给顶级组件保存当前值对应得数据源
     if (formInstance?.getSelectData() && name) {

@@ -57,7 +57,8 @@ const getHistoryIndex = () => historyIndex.value
 
 // schema的唯一修改入口
 const setSchema: DesignInstance['setSchema'] = (schema = getSchema()) => {
-  modelValue.value = repirJsonSchema(schema)
+  // 转为响应式对象，保证属性面板原地修改节点后画布能实时更新
+  modelValue.value = reactive(repirJsonSchema(schema))
 
   // 由于 repirJsonSchema 会重新生成所有 designKey，导致之前的 currentKey 找不到对应节点
   // 因此每次 setSchema 后重置为 root，避免找不到节点的问题

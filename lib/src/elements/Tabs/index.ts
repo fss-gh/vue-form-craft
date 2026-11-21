@@ -1,4 +1,5 @@
 import type { FormElement } from '@/types'
+import { generateDesignKey } from '@/utils'
 import Tabs from './Tabs.vue'
 
 export default {
@@ -112,8 +113,13 @@ export default {
         componentProps: {
           mode: 'card',
           title: '选项卡',
-          getNewItem:
-            '{{ (index) => { return { label: "选项卡" + index, name: "name" + index } } }}'
+          getNewItem: (index: number) => ({
+            label: `选项卡${index}`,
+            name: `name${index}`,
+            component: 'TabPane',
+            items: [],
+            designKey: generateDesignKey()
+          })
         },
         name: 'items'
       }

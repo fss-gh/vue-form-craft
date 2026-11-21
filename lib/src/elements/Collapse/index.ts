@@ -1,4 +1,5 @@
 import type { FormElement } from '@/types'
+import { generateDesignKey } from '@/utils'
 import Collapse from './Collapse.vue'
 
 export default {
@@ -59,8 +60,14 @@ export default {
         componentProps: {
           mode: 'card',
           title: '折叠面板',
-          getNewItem:
-            '{{ (index) => { return { label: "面板" + index, name: "name" + index, componentProps: { checked: false } } } }}'
+          getNewItem: (index: number) => ({
+            label: `面板${index}`,
+            name: `name${index}`,
+            component: 'CollapseItem',
+            componentProps: { checked: false },
+            items: [],
+            designKey: generateDesignKey()
+          })
         },
         name: 'items'
       }

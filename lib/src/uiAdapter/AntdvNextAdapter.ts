@@ -356,7 +356,14 @@ const AntdvNextAdapter: UIAdapter = {
             ]),
             class: itemClass,
             labelCol: getLabelCol(propsAttrs.labelWidth),
-            layout: propsAttrs.labelAlign === 'top' ? 'vertical' : 'horizontal',
+            // 未显式声明 labelAlign 时不要传 layout，否则会覆盖 Form 的 vertical 布局
+            layout:
+              propsAttrs.labelAlign === 'top'
+                ? 'vertical'
+                : propsAttrs.labelAlign
+                  ? 'horizontal'
+                  : undefined,
+            labelAlign: normalizeLabelAlign(propsAttrs.labelAlign),
             validateStatus: hasError ? 'error' : undefined,
             help: hasError ? propsAttrs.error : undefined
           },

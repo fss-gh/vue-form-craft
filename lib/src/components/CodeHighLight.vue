@@ -10,11 +10,8 @@
 <script setup lang="ts">
 import { createHighlighterCore } from 'shiki/core'
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
-import javascript from 'shiki/langs/javascript.mjs'
-import json from 'shiki/langs/json.mjs'
 import markdown from 'shiki/langs/markdown.mjs'
-import typescript from 'shiki/langs/typescript.mjs'
-import vue from 'shiki/langs/vue-html.mjs'
+import vueLangs from 'shiki/langs/vue.mjs'
 import githubLight from 'shiki/themes/github-light.mjs'
 import { onMounted, ref } from 'vue'
 import { Icon } from '@/components'
@@ -60,7 +57,7 @@ onMounted(async () => {
       // 传入导入的包，而不是字符串
       githubLight
     ],
-    langs: [javascript, typescript, vue, json, markdown]
+    langs: [...vueLangs, markdown]
   })
 
   html.value = highlighter.codeToHtml(props.code, {

@@ -4,7 +4,7 @@
 
 ## 目标
 
-- **支持多 UI**：支持 Element-Plus / Arco / Antdv Next / Naive UI 等，甚至自定义组件库。
+- **支持多 UI**：支持 Element-Plus / Antdv Next / Vean UI / Arco / Naive UI 等，甚至自定义组件库。
 - 同一套JsonSchema协议，可以适配多套UI库，一键切换。
 - **保持单库发布**：继续使用一个 npm 包 `vue-form-craft`，UI 库由用户自行安装。
 - **渐进迁移**：兼容现有“以 element-plus 为主”的 schema，逐步演进为 UI 无关的抽象协议。
@@ -13,7 +13,7 @@
 
 ## 适配进度
 
-**已完成: 27 / 34**
+**已完成: 27 / 34（Element Plus / Antdv Next / Vean UI 三套适配器均已覆盖）**
 
 **第一优先级：高频表单组件**
 
@@ -29,7 +29,7 @@
 - ✅ Switch（开关）- 已适配
 - ✅ Slider（滑块）- 已适配
 - ✅ Rate（评分）- 已适配
-- ✅ ColorPicker（颜色选择器）- 已适配（使用 antdv-next ColorPicker）
+- ✅ ColorPicker（颜色选择器）- 已适配（三套适配器均覆盖）
 - ✅ InputNumber（数字输入框）- 已适配
 - ✅ Cascader（级联选择器）- 已适配
 
@@ -241,6 +241,60 @@ const AntdvNextAdapter: UIAdapter = {
 export default AntdvNextAdapter
 ```
 
+#### Vean UI 适配器说明
+
+`VeanUIAdapter` 位于 `lib/src/uiAdapter/VeanUIAdapter.ts`，与 Element Plus / Antdv Next 适配器遵守同一套协议。主要映射约定：
+
+- **尺寸**：`large → lg`、`default → md`、`small → sm`，同时兼容 Vean 原生的 `xs/xl/2xl`。
+- **颜色与按钮**：协议中的 `primary/success/warning/danger/info` 会映射到 Vean 的 `color`，按钮再根据 `plain/round/circle` 等组合为 `variant`。
+- **选项类组件**：`Select/RadioGroup/CheckboxGroup/Cascader` 的 `options` 会转换为 Vean 的 `items/options` 数据结构。
+- **布局组件**：`Tabs` / `Collapse` 会从 `TabPane` / `CollapseItem` 子节点中提取 `items`，并保留内容渲染。
+- **日期组件**：协议值（字符串/数组）会与 Vean 的 `DateValue` 互转，`valueFormat` 的格式化/解析由适配器负责。
+- **表单校验**：适配器内部提供 `Form/FormItem` 上下文和校验引擎，保持 `required/rules/validate/resetFields` 等协议行为。
+- **事件兼容**：适配器会把 Vue 合并后的同名监听器（函数或函数数组）统一派发。
+
+##### 前置条件：SConfigProvider
+
+Vean 的主题 token、Toast 与 Dialog 上下文由 `SConfigProvider` 提供。使用 Vean 适配器时，必须在 `FormDesign` / `FormRender` 的祖先节点包裹它，并引入样式：
+
+```ts
+import '@vean/ui/styles.css'
+import { SConfigProvider } from '@vean/ui'
+```
+
+```vue
+<template>
+  <SConfigProvider>
+    <App />
+  </SConfigProvider>
+</template>
+```
+
+> `Message.success/error/...` 依赖 Vean 的 Toast 上下文，`Message.confirm` 依赖 Dialog 上下文；缺少 `SConfigProvider` 时命令式消息无法正常展示。适配器不会自行创建 Provider 容器。
+
+##### 能力差异与降级
+
+Vean 的部分组件 API 与 Element Plus 不完全一致，以下能力为“尽力而为”或存在视觉差异：
+
+| 协议能力 | Vean 降级方式 |
+| --- | --- |
+| `Input.showWordLimit` | 适配器自行渲染字数统计，不使用输入框内置计数 |
+| `Input.prepend/append` | 已适配：`prefix/suffix` 映射 Vean 原生 `leading/trailing` 插槽，`prepend/append` 由适配器用外层 flex 容器拼接 |
+| `Select.loading` | 在弹层顶部显示“加载中...”，不改变触发器状态 |
+| `Switch.activeText/inactiveText` | 已适配：根据开关状态切换 `leading/trailing` 插槽文案 |
+| `Switch.loading` | 仅降低透明度，不阻止交互 |
+| `Divider` 默认间距 | 水平分隔线默认 `margin: 24px 0`，垂直分隔线默认 `margin: 0 8px`，避免与相邻表单项重叠 |
+| `Slider` 空值 | `modelValue` 为空时改用 `defaultValue`，避免 Vean 将空数组归一化为 `0` |
+| `Rate.showScore/showText` | 适配器额外渲染分数文本 |
+| `ColorPicker.colorFormat=hsv` | Vean 使用 HSL，HSV 会降级为 HSL/HEX |
+| `DatePicker.format` | Vean 日期段由 locale 决定显示顺序，无法完全按 `format` 自定义 |
+| `DatePicker` 的 `month/year/week` 类型 | 仅完整支持 `date/datetime/daterange/datetimerange` 语义 |
+| `Modal.width/top/to/lockScroll/center/destroyOnClose` | 适配器通过尺寸、定位、Teleport 与条件渲染模拟 |
+| `Tabs.closable/addable/editable/stretch` | `stretch` 映射为 `fill`，其余编辑能力暂不支持 |
+| `Tabs.tabPosition` | 仅区分水平/垂直，`bottom` 作为水平处理 |
+| `Tooltip.effect/offset/trigger/visible` | 部分能力透传，Vean Tooltip 无完全等价 API |
+| `Cascader.loading` | 通过透明度和禁用指针事件模拟 |
+
 ### 3. 使用方式
 
 插件 `install(app, options)` 支持一个可选的 `options.ui` 参数，该参数接收一个 `UIAdapter` 对象。默认使用 `Element-Plus` 的 `UIAdapter`。
@@ -253,10 +307,10 @@ export default AntdvNextAdapter
 
 ```typescript
 // main.ts
-import VueFormCraft, { AntdvNextAdapter, ElementPlusAdapter } from 'vue-form-craft'
+import VueFormCraft, { AntdvNextAdapter, ElementPlusAdapter, VeanUIAdapter } from 'vue-form-craft'
 import { createApp } from 'vue'
 import App from './App.vue'
-// 方式3: 自定义适配器
+// 方式4: 自定义适配器
 import MyCustomAdapter from './MyCustomAdapter'
 
 const app = createApp(App)
@@ -267,6 +321,11 @@ app.use(VueFormCraft)
 // 方式2: 使用 Antdv Next
 app.use(VueFormCraft, {
   ui: AntdvNextAdapter
+})
+
+// 方式3: 使用 Vean UI（需要在应用根部包裹 SConfigProvider）
+app.use(VueFormCraft, {
+  ui: VeanUIAdapter
 })
 
 app.use(VueFormCraft, {
@@ -334,7 +393,7 @@ const value = ref('')
 
 ## 注意事项
 
-- 暂时先适配`Element-Plus`和`Antdv Next`，把这两个适配完美后，就可高效率的再扩展其他UI库。
+- 目前已适配 `Element-Plus`、`Antdv Next` 和 `Vean UI`；继续扩展其他 UI 库时复用同一套 `UIAdapter` 协议。
 - 提炼出的每个组件`Protocol`，需要放到总的`UIAdapter`里，作为内置组件库的类型。 这个`UIAdapter`与UI库解耦，作为表单设计器的自有组件库抽象，其他UI库需要往这个接口适配
 - 对于方法调用类组件（如 Message、MessageBox），应该合并为一个对象，便于统一管理和调用
 - **映射优先，透传兜底**：
@@ -353,5 +412,8 @@ const value = ref('')
 - **插槽适配**: 不同 UI 库的插槽名称可能不同,需要在适配器中进行映射
 - **事件适配**: 事件名称和参数可能不同,需要在适配器中统一转换为协议定义的格式
 - **外部化依赖**: vue-form-craft 将所有 UI 库设置为 peerDependencies,不会打包进库中
+- **Vean UI Provider**：`VeanUIAdapter` 不自行挂载 Provider，使用方必须在应用根部包裹 `SConfigProvider` 并引入 `@vean/ui/styles.css`，否则主题 token、Toast、Dialog 不可用
+- **Vean UI 属性兼容**：适配器组件不声明 props，模板中的 kebab-case 属性（如 `model-value`、`destroy-on-close`）通过内部 `normalizeAttrs` 兼容；Vue 合并后的同名事件监听器可能是函数数组，统一通过 `callHandler` 派发
+- **Vean UI 隐藏标签**：`FormItem` 的 `hide-label`（`labelWidth=0` 或无 label）需要在 `src/style.scss` 中隐藏 `.vfc-vean-form-item__label`，否则空的标签列仍会占据 `labelWidth` 宽度，导致属性面板内的表单整体右移
 - 部分组件的样式适配，需要在src/style.scss中进行穿透，注意不要使用deep选择器。
 - 适配的时候，不要使用嵌套的三目运算，因为不好维护。

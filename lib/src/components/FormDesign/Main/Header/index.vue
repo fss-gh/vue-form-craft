@@ -98,7 +98,11 @@ const rightActions: PreviewAction[] = [
     icon: 'trash',
     name: 'clear-design',
     onClick: async () => {
-      await Message.confirm('确认清空当前设计吗？')
+      try {
+        await Message.confirm('确认清空当前设计吗？')
+      } catch {
+        return
+      }
       designInstance.handleClear()
     }
   },

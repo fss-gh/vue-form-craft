@@ -13,10 +13,14 @@
     "vue": "^3.5.46",
     "element-plus": "^2.14.8",
     "antdv-next": "^1.8.2",
+    "@vean/ui": "^0.51.5",
     "@guolao/vue-monaco-editor": "^1.6.0"
   },
   "peerDependenciesMeta": {
     "antdv-next": {
+      "optional": true
+    },
+    "@vean/ui": {
       "optional": true
     }
   },
@@ -41,6 +45,8 @@
     "vue",
     "form",
     "element-ui",
-    "antdv-next"
+    "antdv-next",
+    "vean",
+    "vean-ui"
   ]
 }

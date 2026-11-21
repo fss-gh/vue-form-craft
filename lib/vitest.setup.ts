@@ -40,3 +40,18 @@ config.global.provide = {
     elements
   }
 }
+
+// antdv-next 会读取 matchMedia；jsdom 未实现，测试环境需要补一个最小实现
+if (typeof window !== 'undefined' && !window.matchMedia) {
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false
+    }) as MediaQueryList
+}

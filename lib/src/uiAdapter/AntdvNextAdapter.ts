@@ -345,7 +345,15 @@ const AntdvNextAdapter: UIAdapter = {
         return h(
           FormItem,
           {
-            ...omit(attrs, ['labelWidth', 'labelAlign', 'size', 'error', 'showMessage']),
+            ...omit(attrs, [
+              'labelWidth',
+              'labelAlign',
+              'size',
+              'error',
+              'showMessage',
+              'disableValidation',
+              'disable-validation'
+            ]),
             class: itemClass,
             labelCol: getLabelCol(propsAttrs.labelWidth),
             layout: propsAttrs.labelAlign === 'top' ? 'vertical' : 'horizontal',

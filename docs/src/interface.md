@@ -25,6 +25,17 @@ export type RuleItem = {
 export type FormRules = RuleItem[]
 ```
 
+## ValidationEngineName
+
+表单校验引擎名称。
+
+```ts
+export type ValidationEngineName = 'native' | 'vee-validate'
+```
+
+- `native`：使用当前 UI 库 Form/FormItem 的原生校验（默认）
+- `vee-validate`：使用 VeeValidate 核心校验
+
 ## FormLinkage
 
 表单项联动配置（值联动 / 属性联动）。
@@ -88,6 +99,7 @@ type FormSchema = {
   formId?: string
   submitBtn?: boolean
   resetBtn?: boolean
+  validationEngine?: ValidationEngineName
 }
 ```
 
@@ -163,7 +175,7 @@ interface FormInstance {
   setFieldValue: (path: string, value: any) => void
   updateSelectData: (key: string, value: Record<string, any>) => void
   setFieldAttr: (name: string, path: string, value: any) => void
-  validate: () => FormValidationResult | undefined
+  validate: () => Promise<boolean>
   resetFields: (names?: string[]) => void
   submit: () => void
 }

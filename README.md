@@ -12,6 +12,7 @@ AI 驱动的 Vue3 表单工具，核心由 `FormDesign`（可视化设计器） 
 - 支持复杂联动（JS 表达式 + data/attr 联动）
 - 支持数组字段收集（`FormList`）和深层嵌套
 - 支持校验规则（`required/min/max/pattern/builtin/custom/jsExpr`）
+- 可选 VeeValidate 校验引擎，Schema 与使用方式保持兼容
 - 支持 AI 辅助生成/修改表单 Schema
 - 支持扩展组件与多 UI 适配器（Element Plus / Antdv Next / Vean UI）
 
@@ -87,6 +88,34 @@ app.mount('#app')
 ```
 
 > Vean UI 适配器依赖 `SConfigProvider` 提供主题、Toast 和 Dialog 上下文，因此必须将它放在 `FormDesign` / `FormRender` 的祖先节点；`Message.success` 等命令式消息也需要它。样式文件 `@vean/ui/styles.css` 需要引入一次。
+
+#### 可选：VeeValidate 校验引擎
+
+默认使用各 UI 库 Form/FormItem 的原生校验。需要 VeeValidate 时，可全局开启：
+
+```ts
+app.use(VueFormCraft, {
+  validationEngine: 'vee-validate'
+})
+```
+
+也可以只对单个表单开启或覆盖全局配置：
+
+```ts
+const schema: FormSchema = {
+  validationEngine: 'vee-validate',
+  items: [
+    {
+      label: '用户名',
+      name: 'username',
+      component: 'Input',
+      required: true
+    }
+  ]
+}
+```
+
+`required` / `rules` / `trigger` 的配置写法不变，`validate()`、`submit()`、`resetFields()` 的调用方式也不变。`vee-validate` 已随框架安装；使用 UMD/CDN 方式引入时，需要额外提供 `VeeValidate` 全局变量。
 
 ### 3. 使用 `FormRender`
 

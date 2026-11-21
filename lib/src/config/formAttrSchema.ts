@@ -82,6 +82,25 @@ export default {
               defaultValue: 'default'
             },
             {
+              label: '校验引擎',
+              name: 'validationEngine',
+              component: 'Radio',
+              componentProps: {
+                mode: 'static',
+                options: [
+                  {
+                    label: 'UI 原生',
+                    value: 'native'
+                  },
+                  {
+                    label: 'VeeValidate',
+                    value: 'vee-validate'
+                  }
+                ]
+              },
+              defaultValue: 'native'
+            },
+            {
               label: '表单初始值',
               name: 'initialValues',
               component: 'Custom',

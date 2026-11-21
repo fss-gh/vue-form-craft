@@ -8,6 +8,8 @@ export { useFormInstance } from '@/hooks'
 
 export * from './uiAdapter'
 
+export type { ValidationEngineName, NormalizedRule } from '@/validation'
+
 export type {
   FormElement,
   FormItemType,

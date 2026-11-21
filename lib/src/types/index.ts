@@ -1,5 +1,5 @@
-import type { FormValidationResult } from 'element-plus'
 import type { Component, VNode } from 'vue'
+import type { ValidationEngineName } from '@/validation/types'
 import type { UIAdapter } from './uiAdapter'
 
 export type RuleType =
@@ -76,6 +76,13 @@ export type FormSchema = {
   formId?: string
   submitBtn?: boolean
   resetBtn?: boolean
+  /**
+   * 校验引擎
+   *
+   * - native：使用当前 UI 库 Form/FormItem 原生校验（默认）
+   * - vee-validate：使用 VeeValidate 核心校验
+   */
+  validationEngine?: ValidationEngineName
 }
 
 export type FormElement = {
@@ -138,6 +145,8 @@ export type Options = {
   extendElements?: Record<string, FormElement>
   ai?: AiGenerateFunction // 改为函数类型
   ui?: UIAdapter // UI 适配器
+  /** 全局默认校验引擎，可在 FormSchema.validationEngine 中按表单覆盖 */
+  validationEngine?: ValidationEngineName
 }
 
 export interface Globals extends Options {
@@ -183,7 +192,7 @@ export interface FormInstance {
   setFieldValue: (path: string, value: any) => void
   updateSelectData: (key: string, value: Record<string, any>) => void
   setFieldAttr: (name: string, path: string, value: any) => void
-  validate: () => FormValidationResult | undefined
+  validate: () => Promise<boolean>
   resetFields: (names?: string[]) => void
   submit: () => void
 }

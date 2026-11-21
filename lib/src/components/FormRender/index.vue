@@ -23,10 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import type { FormSchema } from '@/types'
-import { cloneDeep, omit } from 'lodash'
+import type { FormSchema, Globals } from '@/types'
+import { cloneDeep, get, omit, set, unset } from 'lodash'
 import {
   computed,
+  inject,
   onBeforeMount,
   onBeforeUnmount,
   provide,
@@ -37,10 +38,11 @@ import {
 } from 'vue'
 import { initSchema } from '@/config'
 import { useUI } from '@/hooks'
-import { $formInstance } from '@/symbol'
+import { $formInstance, $globals, $validationContext } from '@/symbol'
 import type { FormInstance, FormRenderEmits, FormRenderProps } from '@/types'
 import type { FormProtocol } from '@/types/uiAdapter'
 import { deepParse, getDataByPath, setDataByPath } from '@/utils'
+import { createVeeValidationContext } from '@/validation'
 import FormItemGroup from './FormItemGroup/index.vue'
 
 const { Form, FormItem, Button } = useUI()
@@ -53,6 +55,9 @@ const emits = defineEmits<FormRenderEmits>()
 
 // 注意：默认值必须使用工厂函数返回新对象，避免跨实例共享
 const formValues = defineModel<Record<string, any>>({ default: () => reactive({}) })
+
+// 记录首次挂载时的值，VeeValidate 引擎重置时使用
+const initialFormValues = ref<Record<string, any>>({})
 
 const form = useTemplateRef<FormProtocol['expose']>('form')
 
@@ -77,6 +82,22 @@ const trigger = (eventName: keyof FormRenderEmits, ...args: any[]) => {
   handler?.(...args)
 }
 
+const globals = inject<Globals | null>($globals, null)
+
+// 表单级配置优先，其次是 install 时的全局默认值；默认保持 UI 原生校验
+const isVeeValidationEngine = computed(() => {
+  const engine = innerSchema.value.validationEngine ?? globals?.validationEngine
+  return engine === 'vee-validate'
+})
+
+const veeValidationContext = createVeeValidationContext({
+  getValues: () => formValues.value,
+  isEnabled: () => isVeeValidationEngine.value,
+  scrollToError: () => parseSchema.value.scrollToError !== false
+})
+
+provide($validationContext, veeValidationContext)
+
 // ========== API 方法定义（需要在 context 之前定义） ==========
 const getValues: FormInstance['getValues'] = () => formValues.value
 
@@ -96,7 +117,13 @@ const setFieldValue: FormInstance['setFieldValue'] = async (path, value) => {
   trigger('fieldChange', path, value)
 }
 
-const validate: FormInstance['validate'] = () => form.value!.validate()
+const validate: FormInstance['validate'] = () => {
+  if (isVeeValidationEngine.value) {
+    return veeValidationContext.validate()
+  }
+
+  return form.value!.validate()
+}
 
 const submit: FormInstance['submit'] = () => {
   validate()
@@ -108,8 +135,38 @@ const submit: FormInstance['submit'] = () => {
     })
 }
 
+const resetVeeValues = (names?: string[]) => {
+  const initialValues = cloneDeep(initialFormValues.value)
+
+  if (!names || names.length === 0) {
+    setValues(initialValues)
+    return
+  }
+
+  const values = cloneDeep(formValues.value)
+
+  names.forEach((name) => {
+    const initialValue = get(initialValues, name)
+
+    if (initialValue === undefined) {
+      unset(values, name)
+      return
+    }
+
+    set(values, name, cloneDeep(initialValue))
+  })
+
+  setValues(values)
+}
+
 const resetFields: FormInstance['resetFields'] = (names) => {
   trigger('reset')
+
+  if (isVeeValidationEngine.value) {
+    veeValidationContext.resetFields(names)
+    resetVeeValues(names)
+    return
+  }
 
   form.value?.resetFields(names)
 }
@@ -186,7 +243,8 @@ const formAttrs = computed(() => {
     'onFieldChange',
     'onChange',
     'submitBtn',
-    'resetBtn'
+    'resetBtn',
+    'validationEngine'
     // 'styleBlock'
   ])
 
@@ -231,6 +289,9 @@ onBeforeMount(() => {
 
     setValues({ ...values, ...formValues.value })
   }
+
+  // 记录初始值，供 VeeValidate 引擎 resetFields 使用
+  initialFormValues.value = cloneDeep(formValues.value)
 })
 
 onBeforeUnmount(() => {

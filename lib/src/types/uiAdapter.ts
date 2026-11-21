@@ -81,6 +81,13 @@ export interface FormItemProtocol {
     error?: string
     showMessage?: boolean
     size?: 'large' | 'default' | 'small'
+    /**
+     * 是否关闭当前 FormItem 的原生校验
+     *
+     * 启用 VeeValidate 引擎时由 FormItem 传入，
+     * 避免 UI 库原生校验与 VeeValidate 重复执行。
+     */
+    disableValidation?: boolean
   }
   slots: {
     default?: () => VNode

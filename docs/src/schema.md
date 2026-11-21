@@ -142,6 +142,9 @@ FormSchema
 | formId               | `string`                          | -           | 表单 id（用于样式隔离等场景） |
 | submitBtn            | `boolean`                         | `true`      | 是否显示提交按钮 |
 | resetBtn             | `boolean`                         | `true`      | 是否显示重置按钮 |
+| validationEngine     | `'native' \| 'vee-validate'`      | `'native'`  | 校验引擎；可覆盖全局默认值 |
+
+> `validationEngine` 只切换校验执行器，不改变 `required` / `rules` 的配置写法。启用 `vee-validate` 后，`validate()`、`submit()`、`resetFields()` 的行为与原生模式保持一致。
 
 ### 表单项配置（FormItemType）
 

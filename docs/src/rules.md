@@ -57,3 +57,48 @@ type FormRules = RuleItem[]
 demo/RuleDemo.vue
 
 :::
+
+## 校验引擎
+
+框架默认使用当前 UI 库 Form/FormItem 的原生校验，因此已有的 Schema 和错误提示行为保持不变。
+
+从 `5.0.0` 开始可选启用 [VeeValidate](https://vee-validate.logaretm.com/) 作为校验引擎。启用后：
+
+- `required` / `rules` 的配置写法完全不变
+- `trigger: 'blur' | 'change'` 仍然生效
+- `validate()` / `submit()` / `resetFields()` 的使用方式不变
+- 校验错误仍由当前 UI 适配器展示
+
+### 按表单启用
+
+```json
+{
+  "validationEngine": "vee-validate",
+  "items": [
+    {
+      "label": "用户名",
+      "name": "username",
+      "component": "Input",
+      "required": true
+    }
+  ]
+}
+```
+
+### 全局默认启用
+
+```ts
+app.use(VueFormCraft, {
+  validationEngine: 'vee-validate'
+})
+```
+
+`FormSchema.validationEngine` 的优先级高于全局配置，可单独切回 `"native"`：
+
+```json
+{
+  "validationEngine": "native"
+}
+```
+
+> `vee-validate` 已作为框架依赖安装。使用 UMD/CDN 方式引入时，需要额外提供 `VeeValidate` 全局变量。

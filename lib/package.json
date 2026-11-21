@@ -10,11 +10,11 @@
     "release": "vite build && nrm use npm && npm publish"
   },
   "peerDependencies": {
-    "vue": "^3.5.46",
-    "element-plus": "^2.14.8",
-    "antdv-next": "^1.8.2",
+    "@guolao/vue-monaco-editor": "^1.6.0",
     "@vean/ui": "^0.51.5",
-    "@guolao/vue-monaco-editor": "^1.6.0"
+    "antdv-next": "^1.8.2",
+    "element-plus": "^2.14.8",
+    "vue": "^3.5.46"
   },
   "peerDependenciesMeta": {
     "antdv-next": {
@@ -48,5 +48,8 @@
     "antdv-next",
     "vean",
     "vean-ui"
-  ]
+  ],
+  "dependencies": {
+    "vee-validate": "^4.15.1"
+  }
 }

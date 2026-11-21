@@ -115,7 +115,7 @@ const ElementPlusAdapter: UIAdapter = {
         h(
           ElFormItem,
           {
-            ...attrs,
+            ...omit(attrs, ['disableValidation', 'disable-validation']),
             labelPosition: propsAttrs.labelAlign,
             prop: propsAttrs.name
           },

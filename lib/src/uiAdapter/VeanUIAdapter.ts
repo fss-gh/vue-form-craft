@@ -960,6 +960,9 @@ const VeanUIAdapter: UIAdapter = {
       )
 
       const getEffectiveRules = (): any[] => {
+        // 使用 VeeValidate 等外部校验引擎时，关闭当前 FormItem 的原生校验
+        if (propsAttrs.disableValidation) return []
+
         const rules: any[] = []
         const formRules = form?.getRulesForName(propsAttrs.name)
         if (formRules) rules.push(...formRules)
@@ -1048,7 +1051,7 @@ const VeanUIAdapter: UIAdapter = {
         const hasLabel = hasLabelSlot || (propsAttrs.label !== undefined && propsAttrs.label !== '')
         const hideLabel = labelWidth === 0 || !hasLabel
         const rules = getEffectiveRules()
-        const required = hasRequiredRule(rules)
+        const required = propsAttrs.required === true || hasRequiredRule(rules)
         const showRequiredMark = required && !form?.hideRequiredAsterisk
 
         const labelStyle: Record<string, any> = {
@@ -1130,7 +1133,9 @@ const VeanUIAdapter: UIAdapter = {
           'rules',
           'error',
           'showMessage',
-          'size'
+          'size',
+          'disableValidation',
+          'disable-validation'
         ])
 
         return h(

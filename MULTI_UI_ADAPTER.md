@@ -295,6 +295,18 @@ Vean 的部分组件 API 与 Element Plus 不完全一致，以下能力为“�
 | `Tooltip.effect/offset/trigger/visible` | 部分能力透传，Vean Tooltip 无完全等价 API |
 | `Cascader.loading` | 通过透明度和禁用指针事件模拟 |
 
+#### 校验引擎与适配器
+
+校验层与 UI 适配器解耦：
+
+1. `FormItem` 把 schema 中的 `required` / `rules` 归一化为 `NormalizedRule[]`，不再直接依赖 Element Plus 的 `FormItemRule`。
+2. 默认 `validationEngine: 'native'` 时，归一化规则继续交给各 UI 库的 `FormItem` 执行，行为与升级前一致。
+3. `validationEngine: 'vee-validate'` 时，`FormRender` 提供 `$validationContext`，`FormItem` 注册字段控制器；适配器的原生校验通过 `disableValidation` 关闭。
+4. 错误文案统一通过 FormItem 协议的 `error` 属性下发，由适配器决定如何渲染；必填星号通过 `required` 下发。
+5. `blur` / `change` / 提交 / 重置 / 滚动到错误项均由引擎统一调度，适配器只负责展示。
+
+Element Plus、Antdv Next、Vean UI 三种适配器均已覆盖同一套 VeeValidate 集成测试。
+
 ### 3. 使用方式
 
 插件 `install(app, options)` 支持一个可选的 `options.ui` 参数，该参数接收一个 `UIAdapter` 对象。默认使用 `Element-Plus` 的 `UIAdapter`。

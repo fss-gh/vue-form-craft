@@ -3,14 +3,19 @@
     <FormItem
       v-if="config.type === 'basic' || config.type === 'high'"
       v-show="design || show"
+      ref="formItemRef"
       :class="classNames"
       :style="style"
       :key="name"
       :name="name"
-      :rules="computeRules"
+      :rules="nativeRules"
+      :required="isVeeValidation ? required : undefined"
+      :error="isVeeValidation ? veeError : undefined"
+      :disable-validation="isVeeValidation"
       :labelWidth="labelWidth"
       :labelAlign="labelAlign"
       :size="size"
+      @focusout="handleFocusOut"
     >
       <template #label>
         <div :class="[ns('form-item-label'), label && `${name}-label`]">
@@ -35,11 +40,13 @@
 
 <script setup lang="ts">
 import { cloneDeep, isEqual } from 'lodash'
-import { computed, h, watch } from 'vue'
+import { computed, h, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@/components'
 import { useElements, useFormInstance, useUI } from '@/hooks'
+import { $validationContext } from '@/symbol'
 import type { FormItemType, RuleItem } from '@/types'
-import { filterExpressions, getDataByPath, ns, parseRules } from '@/utils'
+import { filterExpressions, getDataByPath, ns } from '@/utils'
+import { createVeeFieldController, hasRequiredRule, normalizeRules } from '@/validation'
 
 const { FormItem, Alert, Tooltip } = useUI()
 
@@ -75,7 +82,7 @@ const computeRules = computed(() => {
   // rules中的配置优先级更高，如果已配置必填规则，直接使用rules
   const hasRequiredInRules = rules.some((rule) => rule.type === 'required')
   if (hasRequiredInRules) {
-    return parseRules(rules, props.name)
+    return normalizeRules(rules, props.name)
   }
 
   // rules中没有必填规则时，根据required属性决定是否添加默认必填规则
@@ -85,10 +92,54 @@ const computeRules = computed(() => {
       message: '该字段是必填字段',
       trigger: 'blur'
     }
-    return parseRules([defaultRequiredRule, ...rules], props.name)
+    return normalizeRules([defaultRequiredRule, ...rules], props.name)
   }
 
-  return parseRules(rules, props.name)
+  return normalizeRules(rules, props.name)
+})
+
+// ========== VeeValidate 校验接入 ==========
+const validationContext = inject($validationContext, null)
+const formItemRef = ref<any>(null)
+
+const isVeeValidation = computed(() => validationContext?.enabled.value ?? false)
+const nativeRules = computed(() => (isVeeValidation.value ? [] : computeRules.value))
+const required = computed(() => hasRequiredRule(computeRules.value))
+
+const veeFieldController = validationContext
+  ? createVeeFieldController({
+      name: () => props.name,
+      rules: () => computeRules.value,
+      getValues: () => formInstance.getValues(),
+      scrollTo: () => {
+        const el = formItemRef.value?.$el as HTMLElement | undefined
+        el?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
+      }
+    })
+  : undefined
+
+const veeError = computed(() => veeFieldController?.getError() ?? '')
+
+const handleFocusOut = () => {
+  if (!isVeeValidation.value || design.value) return
+  void veeFieldController?.validate('blur')
+}
+
+watch(value, () => {
+  if (!isVeeValidation.value || design.value) return
+  void veeFieldController?.validate('change')
+})
+
+onMounted(() => {
+  if (veeFieldController) {
+    validationContext?.registerField(veeFieldController)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (veeFieldController) {
+    validationContext?.unregisterField(veeFieldController)
+  }
 })
 
 const config = computed(() => {

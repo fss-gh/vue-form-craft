@@ -13,6 +13,7 @@ import {
   SSeparator,
   SInput,
   SInputNumber,
+  SPopover,
   SRadioGroup,
   SRadioGroupCard,
   SRating,
@@ -62,6 +63,7 @@ import type {
   MessageBoxOptions,
   MessageOptions,
   ModalProtocol,
+  PopoverProtocol,
   RadioGroupProtocol,
   RateProtocol,
   SelectProtocol,
@@ -2271,6 +2273,32 @@ const VeanUIAdapter: UIAdapter = {
           }
         )
       }
+    },
+    { inheritAttrs: false }
+  ),
+
+  Popover: defineComponent(
+    (_, { attrs, slots }) => {
+      const propsAttrs = normalizeAttrs(attrs) as PopoverProtocol['props']
+
+      return () =>
+        h(
+          SPopover as any,
+          {
+            ...omit(attrs, ['visible', 'trigger', 'width', 'disabled', 'onUpdate:visible']),
+            open: propsAttrs.disabled ? false : propsAttrs.visible,
+            disabled: propsAttrs.disabled,
+            placement: normalizeTooltipPlacement(propsAttrs.placement),
+            showArrow: true,
+            'onUpdate:open': (open: boolean) => {
+              callHandler(propsAttrs['onUpdate:visible'], open)
+            }
+          },
+          {
+            trigger: slots.default,
+            default: slots.content
+          }
+        )
     },
     { inheritAttrs: false }
   ),

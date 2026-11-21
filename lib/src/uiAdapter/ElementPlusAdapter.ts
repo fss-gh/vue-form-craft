@@ -17,6 +17,7 @@ import {
   ElMessage,
   ElMessageBox,
   ElOption,
+  ElPopover,
   ElRadioGroup,
   ElRate,
   ElSelect,
@@ -39,6 +40,7 @@ import type {
   FormProtocol,
   MessageBoxOptions,
   MessageOptions,
+  PopoverProtocol,
   UIAdapter
 } from '@/types/uiAdapter'
 import ns from '@/utils/ns'
@@ -146,6 +148,31 @@ const ElementPlusAdapter: UIAdapter = {
   Tooltip: defineComponent(
     (_, { slots, attrs }) => {
       return () => h(ElTooltip, attrs, slots)
+    },
+    { inheritAttrs: false }
+  ),
+
+  Popover: defineComponent(
+    (_, { slots, attrs }) => {
+      const propsAttrs = attrs as PopoverProtocol['props']
+
+      return () =>
+        h(
+          ElPopover,
+          {
+            ...omit(attrs, ['visible', 'trigger', 'onUpdate:visible']),
+            visible: propsAttrs.visible,
+            trigger: propsAttrs.trigger ?? 'click',
+            showArrow: true,
+            'onUpdate:visible': (visible: boolean) => {
+              propsAttrs['onUpdate:visible']?.(visible)
+            }
+          },
+          {
+            reference: slots.default,
+            default: slots.content
+          }
+        )
     },
     { inheritAttrs: false }
   ),

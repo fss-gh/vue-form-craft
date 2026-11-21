@@ -50,6 +50,7 @@
     "vean-ui"
   ],
   "dependencies": {
+    "katex": "^0.19.1",
     "vee-validate": "^4.15.1"
   }
 }

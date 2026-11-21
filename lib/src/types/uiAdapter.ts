@@ -33,6 +33,7 @@ export interface UIAdapter {
   Modal: Component<ModalProtocol['props']>
   Alert: Component<AlertProtocol['props']>
   Tooltip: Component<TooltipProtocol['props']>
+  Popover: Component<PopoverProtocol['props']>
   Tag: Component<TagProtocol['props']>
   // 消息组件
   Message: MessageProtocol
@@ -188,6 +189,25 @@ export interface TooltipProtocol {
     offset?: number
     showArrow?: boolean
     trigger?: 'hover' | 'click' | 'focus' | 'contextmenu'
+  }
+  slots: {
+    default?: () => VNode
+    content?: () => VNode
+  }
+}
+
+/**
+ * Popover 组件协议
+ */
+export interface PopoverProtocol {
+  props: {
+    visible?: boolean
+    placement?: TooltipProtocol['props']['placement']
+    /** 弹层宽度，仅部分 UI 库支持 */
+    width?: string | number
+    disabled?: boolean
+    trigger?: 'click' | 'hover' | 'focus' | 'contextmenu'
+    'onUpdate:visible'?: (visible: boolean) => void
   }
   slots: {
     default?: () => VNode

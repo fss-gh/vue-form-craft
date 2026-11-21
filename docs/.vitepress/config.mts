@@ -103,6 +103,7 @@ export default defineConfig({
             { text: 'Esign 电子签名', link: '/components/esign' },
             { text: 'CodeEditor 代码编辑器', link: '/components/code-editor' },
             { text: 'FunctionEditor 函数编辑器', link: '/components/function-editor' },
+            { text: 'Latex LaTeX 公式', link: '/components/latex' },
             { text: 'Custom 自定义组件', link: '/components/custom' }
           ]
         },

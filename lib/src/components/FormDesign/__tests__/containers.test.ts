@@ -7,11 +7,11 @@ describe('《表单设计器》嵌套容器测试', () => {
 
     await dblclickAdd('Tabs')
 
-    const tabsNode = items.value[0]
+    const tabsNode = items.value![0]!
 
     expect(tabsNode.items).toHaveLength(2)
 
-    wrapper.vm.setCurrentKey(tabsNode.designKey)
+    wrapper.vm.setCurrentKey(tabsNode.designKey!)
 
     await wait(300)
 
@@ -23,9 +23,9 @@ describe('《表单设计器》嵌套容器测试', () => {
 
     await wait(300)
 
-    const newTab = items.value[0].items?.[2]
+    const newTab = tabsNode.items?.[2]
 
-    expect(items.value[0].items).toHaveLength(3)
+    expect(tabsNode.items).toHaveLength(3)
     expect(newTab).toMatchObject({
       label: '选项卡3',
       name: 'name3',
@@ -50,11 +50,11 @@ describe('《表单设计器》嵌套容器测试', () => {
 
     await dblclickAdd('Collapse')
 
-    const collapseNode = items.value[0]
+    const collapseNode = items.value![0]!
 
     expect(collapseNode.items).toHaveLength(2)
 
-    wrapper.vm.setCurrentKey(collapseNode.designKey)
+    wrapper.vm.setCurrentKey(collapseNode.designKey!)
 
     await wait(300)
 
@@ -66,9 +66,9 @@ describe('《表单设计器》嵌套容器测试', () => {
 
     await wait(300)
 
-    const newItem = items.value[0].items?.[2]
+    const newItem = collapseNode.items?.[2]
 
-    expect(items.value[0].items).toHaveLength(3)
+    expect(collapseNode.items).toHaveLength(3)
     expect(newItem).toMatchObject({
       label: '面板3',
       name: 'name3',

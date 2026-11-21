@@ -42,6 +42,7 @@
 - [电子签名（Esign）](./esign)
 - [代码编辑器（CodeEditor）](./code-editor)
 - [函数编辑器（FunctionEditor）](./function-editor)
+- [LaTeX 公式（Latex）](./latex)
 - [自定义组件（Custom）](./custom)
 
 

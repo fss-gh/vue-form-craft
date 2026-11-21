@@ -92,6 +92,7 @@
 - `Esign`
 - `CodeEditor`
 - `FunctionEditor`
+- `Latex`
 - `Custom`
 - `ObjGroup`
 

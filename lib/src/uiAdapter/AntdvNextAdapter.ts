@@ -16,6 +16,7 @@ import {
   InputNumber,
   message,
   Modal,
+  Popover,
   RadioGroup,
   Rate,
   Select,
@@ -47,6 +48,7 @@ import type {
   MessageBoxOptions,
   MessageOptions,
   ModalProtocol,
+  PopoverProtocol,
   RadioGroupProtocol,
   RateProtocol,
   SelectProtocol,
@@ -1127,6 +1129,32 @@ const AntdvNextAdapter: UIAdapter = {
           tooltipSlots
         )
       }
+    },
+    { inheritAttrs: false }
+  ),
+
+  Popover: defineComponent(
+    (_, { slots, attrs }) => {
+      const propsAttrs = attrs as PopoverProtocol['props']
+
+      return () =>
+        h(
+          Popover,
+          {
+            ...omit(attrs, ['visible', 'trigger', 'width', 'onUpdate:visible']),
+            open: propsAttrs.disabled ? false : propsAttrs.visible,
+            placement: normalizeTooltipPlacement(propsAttrs.placement),
+            trigger: normalizeTooltipTrigger(propsAttrs.trigger) ?? 'click',
+            arrow: true,
+            onOpenChange: (open: boolean) => {
+              propsAttrs['onUpdate:visible']?.(open)
+            }
+          },
+          {
+            default: slots.default,
+            content: slots.content
+          }
+        )
     },
     { inheritAttrs: false }
   ),

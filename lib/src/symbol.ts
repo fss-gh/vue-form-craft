@@ -1,4 +1,5 @@
 import type { InjectionKey } from 'vue'
+import type { UnitLinkageContext } from '@/elements/InputNumber/types'
 import type { DesignInstance, FormInstance, Globals } from '@/types'
 import type { UIAdapter } from '@/types/uiAdapter'
 import type { VeeValidationContext } from '@/validation'
@@ -13,3 +14,6 @@ export const $uiAdapter = Symbol() as InjectionKey<UIAdapter>
 
 /** VeeValidate 校验上下文（由 FormRender 提供） */
 export const $validationContext = Symbol() as InjectionKey<VeeValidationContext>
+
+/** 容器单位联动上下文（由自增容器、对象容器提供） */
+export const $unitLinkage = Symbol() as InjectionKey<UnitLinkageContext>

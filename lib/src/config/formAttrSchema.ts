@@ -36,7 +36,7 @@ export default {
               defaultValue: 150
             },
             {
-              label: 'label对齐方式',
+              label: '标签对齐方式',
               name: 'labelAlign',
               component: 'Radio',
               componentProps: {

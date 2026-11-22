@@ -1,5 +1,5 @@
 <template>
-  <div :class="ns('function-editor')">
+  <div ref="editorRootRef" :class="ns('function-editor')">
     <div class="button-wrapper">
       <Button type="primary" icon="code" @click="openDialog" size="small">
         <span> 编辑函数</span>
@@ -14,7 +14,7 @@
       center
       :close-on-click-modal="false"
       destroy-on-close
-      :to="ns('function-editor')"
+      :to="editorRootRef || undefined"
     >
       <div class="function-editor-content">
         <div class="editor-tips">
@@ -72,6 +72,8 @@ const { Button, Modal, Message } = useUI()
 const modelValue = defineModel<string>()
 
 const props = defineProps<Props>()
+
+const editorRootRef = ref<HTMLElement | null>(null)
 
 // 计算是否有值
 const hasValue = computed(() => {
@@ -423,7 +425,7 @@ watch(dialogVisible, async (isOpen) => {
   }
 
   .monaco-editor-wrapper {
-    height: 400px;
+    height: 400px ;
     border: 1px solid $borderColor;
     border-radius: 4px;
     overflow: hidden;

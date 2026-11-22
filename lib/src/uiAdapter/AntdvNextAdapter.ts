@@ -66,6 +66,28 @@ import ns from '@/utils/ns'
 type ProtocolSize = 'large' | 'default' | 'small' | undefined
 
 /**
+ * 将模板传入的 kebab-case 属性名转换为 camelCase，
+ * 便于协议读取并将其从透传属性中剔除。
+ */
+const normalizeAttrKeys = (attrs: Record<string, any>): Record<string, any> => {
+  const normalized: Record<string, any> = {}
+
+  Object.entries(attrs).forEach(([key, value]) => {
+    const preserved =
+      key.includes(':') ||
+      key === 'class' ||
+      key === 'style' ||
+      key.startsWith('data-') ||
+      key.startsWith('aria-')
+
+    normalized[preserved ? key : key.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())] =
+      value
+  })
+
+  return normalized
+}
+
+/**
  * 将协议中的 default 尺寸转换为 antdv-next 的 medium 尺寸
  */
 const normalizeSize = (size?: ProtocolSize): 'large' | 'medium' | 'small' | undefined => {
@@ -487,9 +509,9 @@ const AntdvNextAdapter: UIAdapter = {
       return () => {
         const cardSlots = slots.header
           ? {
-              ...slots,
-              title: slots.header
-            }
+            ...slots,
+            title: slots.header
+          }
           : slots
 
         const cardStyles = (attrs as any).styles
@@ -502,9 +524,9 @@ const AntdvNextAdapter: UIAdapter = {
             hoverable: propsAttrs.shadow === 'hover',
             styles: propsAttrs.bodyStyle
               ? {
-                  ...cardStyles,
-                  body: propsAttrs.bodyStyle
-                }
+                ...cardStyles,
+                body: propsAttrs.bodyStyle
+              }
               : cardStyles
           },
           cardSlots
@@ -667,9 +689,9 @@ const AntdvNextAdapter: UIAdapter = {
       return () => {
         const itemSlots = slots.title
           ? {
-              ...slots,
-              header: slots.title
-            }
+            ...slots,
+            header: slots.title
+          }
           : slots
 
         return h(
@@ -750,9 +772,10 @@ const AntdvNextAdapter: UIAdapter = {
 
   Modal: defineComponent(
     (_, { slots, attrs }) => {
-      const propsAttrs = attrs as ModalProtocol['props']
-
       return () => {
+        const normalizedAttrs = normalizeAttrKeys(attrs)
+        const propsAttrs = normalizedAttrs as ModalProtocol['props']
+
         let getContainer: (() => HTMLElement) | undefined
         if (propsAttrs.to) {
           if (typeof propsAttrs.to === 'string') {
@@ -773,7 +796,7 @@ const AntdvNextAdapter: UIAdapter = {
           }
         }
 
-        let modalStyles = (attrs as any).styles
+        let modalStyles = (normalizedAttrs as any).styles
         if (propsAttrs.top) {
           modalStyles = {
             ...modalStyles,
@@ -786,15 +809,15 @@ const AntdvNextAdapter: UIAdapter = {
 
         const modalSlots = slots.header
           ? {
-              ...slots,
-              title: slots.header
-            }
+            ...slots,
+            title: slots.header
+          }
           : slots
 
         return h(
           Modal,
           {
-            ...omit(attrs, [
+            ...omit(normalizedAttrs, [
               'modelValue',
               'onUpdate:modelValue',
               'center',
@@ -1111,9 +1134,9 @@ const AntdvNextAdapter: UIAdapter = {
       return () => {
         const tooltipSlots = slots.content
           ? {
-              ...slots,
-              title: slots.content
-            }
+            ...slots,
+            title: slots.content
+          }
           : slots
 
         return h(

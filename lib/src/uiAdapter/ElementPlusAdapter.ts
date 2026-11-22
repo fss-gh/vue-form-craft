@@ -45,6 +45,31 @@ import type {
 } from '@/types/uiAdapter'
 import ns from '@/utils/ns'
 
+/** 安全查询选择器，非法选择器返回 null */
+const queryTarget = (selector: string): HTMLElement | null => {
+  try {
+    return document.querySelector(selector) as HTMLElement | null
+  } catch {
+    return null
+  }
+}
+
+/** 解析 Modal 挂载目标，兼容选择器、类名和 HTMLElement */
+const resolveAppendTo = (to?: string | HTMLElement): string | HTMLElement => {
+  if (!to) return 'body'
+  if (typeof to !== 'string') return to
+
+  const target = queryTarget(to)
+  if (target) return target
+
+  // 仅对纯类名补全 "."，避免 "..vfc-x" 之类的非法选择器
+  if (/^[\w-]+$/.test(to)) {
+    return queryTarget(`.${to}`) || 'body'
+  }
+
+  return 'body'
+}
+
 /**
  * Element-Plus UI适配器
  */
@@ -288,9 +313,9 @@ const ElementPlusAdapter: UIAdapter = {
         h(
           ElDialog,
           {
-            ...attrs,
+            ...omit(attrs, ['to']),
             // to 参数映射到 ElDialog 的 appendTo
-            appendTo: document.querySelector(propsAttrs.to) || 'body'
+            appendTo: resolveAppendTo(propsAttrs.to)
           },
           slots
         )

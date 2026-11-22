@@ -1,6 +1,6 @@
 import type { FormElement } from '@/types'
+import attrSchema from './attrSchema'
 import ObjGroup from './ObjGroup.vue'
-
 export default {
   title: '对象容器',
   icon: 'itemGroup',
@@ -8,17 +8,5 @@ export default {
   component: 'ObjGroup',
   render: ObjGroup,
   order: 2,
-  attrSchema: {
-    size: 'small',
-    labelAlign: 'top',
-    submitBtn: false,
-    initialValues: {
-      props: {
-        align: 'left',
-        gap: 20
-      },
-      items: []
-    },
-    items: [{ label: '唯一标识', component: 'Input', name: 'name' }]
-  }
+  attrSchema
 } satisfies FormElement

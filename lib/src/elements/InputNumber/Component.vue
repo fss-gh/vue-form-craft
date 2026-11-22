@@ -34,23 +34,6 @@
 
       <template #content>
         <div :class="ns('input-number-unit-popover')">
-          <!-- <div :class="ns('input-number-unit-categories')" role="tablist" aria-label="单位分类">
-            <button
-              v-for="category in unitCategories"
-              :key="category.name"
-              type="button"
-              role="tab"
-              :aria-selected="activeCategory === category.name"
-              :class="[
-                ns('input-number-unit-category'),
-                { 'is-active': activeCategory === category.name }
-              ]"
-              @click="activeCategory = category.name"
-            >
-              {{ category.name }}
-            </button>
-          </div> -->
-
           <div :class="ns('input-number-unit-list')" role="listbox" aria-label="可选单位">
             <button
               v-for="unit in activeUnits"
@@ -79,12 +62,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@/components'
 import { useFormInstance, useUI } from '@/hooks'
+import { $unitLinkage } from '@/symbol'
 import type { FormInstance } from '@/types'
 import { ns } from '@/utils'
-import type { UnitCategory, UnitOption } from './types'
+import type { UnitCategory, UnitLinkageField, UnitOption } from './types'
 import { defaultUnitData, type UnitEntry } from './units'
 
 const props = defineProps<{
@@ -100,6 +84,9 @@ const { InputNumber, Popover } = useUI()
 const value = defineModel<number>()
 
 const formInstance = useFormInstance() as FormInstance | undefined
+
+// 最近的自增容器 / 对象容器提供的单位联动上下文
+const unitLinkage = inject($unitLinkage, null)
 
 // 使用 computed 包装 getter 方法，保持响应式
 const read = computed(() => formInstance?.getRead() ?? false)
@@ -177,6 +164,61 @@ const activeUnits = computed(
   () => unitCategories.value.find((category) => category.name === activeCategory.value)?.units ?? []
 )
 
+const setStoredUnit = (unitCode: string) => {
+  if (formInstance && unitKey.value) {
+    formInstance.setFieldValue(unitKey.value, unitCode)
+    return
+  }
+
+  localUnit.value = unitCode
+}
+
+const unitLinkageField: UnitLinkageField = {
+  accepts(unit) {
+    const target = unitEntries.value.find((item) => item.value === unit.value)
+
+    if (!target) return false
+
+    const category = configuredCategory.value
+
+    // 配置了分类时只同步该分类下的单位，避免写入无效单位
+    return !category || target.category === category
+  },
+  apply(unit) {
+    setStoredUnit(unit.value)
+  }
+}
+
+let unregisterUnitLinkage: (() => void) | undefined
+
+const syncUnitLinkageRegistration = () => {
+  unregisterUnitLinkage?.()
+  unregisterUnitLinkage = undefined
+
+  if (!props.unitEnabled || !unitLinkage?.enabled.value) return
+
+  unitLinkage.fields.add(unitLinkageField)
+  unregisterUnitLinkage = () => unitLinkage.fields.delete(unitLinkageField)
+}
+
+watch(
+  () => [props.unitEnabled, unitLinkage?.enabled.value],
+  syncUnitLinkageRegistration,
+  { immediate: true }
+)
+
+onBeforeUnmount(() => unregisterUnitLinkage?.())
+
+const syncLinkedUnits = (unit: UnitOption) => {
+  if (!props.unitEnabled || !unitLinkage?.enabled.value) return
+
+  unitLinkage.fields.forEach((field) => {
+    if (field !== unitLinkageField && field.accepts(unit)) {
+      field.apply(unit)
+    }
+  })
+}
+
 watch(
   unitCategories,
   (categories) => {
@@ -252,11 +294,10 @@ const applyUnit = (unit: UnitOption) => {
     value.value = normalizeConvertedValue(convertedValue)
   }
 
-  if (formInstance && unitKey.value) {
-    formInstance.setFieldValue(unitKey.value, unit.value)
-  } else {
-    localUnit.value = unit.value
-  }
+  setStoredUnit(unit.value)
+
+  // 同步容器内其他支持该单位的数字组件
+  syncLinkedUnits(unit)
 
   unitPopoverVisible.value = false
 }

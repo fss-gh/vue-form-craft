@@ -54,16 +54,16 @@ const schema: FormSchema = {
 
 describe('《表单渲染器》v-model 双向绑定测试', () => {
   it('外部修改 modelValue 应反映到表单内部', async () => {
-    const initialData = {
+    const initialData = () => ({
       username: 'hyl',
       age: 25,
       gender: 'male',
       hobbies: ['basketball']
-    }
+    })
 
     const wrapper = mount(FormRender, {
       props: {
-        modelValue: initialData,
+        modelValue: initialData(),
         'onUpdate:modelValue': (e: any) => wrapper.setProps({ modelValue: e }),
         schema
       }
@@ -73,7 +73,7 @@ describe('《表单渲染器》v-model 双向绑定测试', () => {
 
     // 验证初始值是否正确渲染
     expect((wrapper.find('input[name="username"]').element as HTMLInputElement).value).toBe('hyl')
-    expect(wrapper.props('modelValue')).toEqual(initialData)
+    expect(wrapper.props('modelValue')).toEqual(initialData())
 
     // 外部修改 modelValue
     const updatedData = {

@@ -16,5 +16,6 @@
 | maxLines    | `number`                                 | 最大行数               |
 | allowAdd    | `boolean`                                | 是否允许新增行         |
 | allowReduce | `boolean`                                | 是否允许删除行         |
+| unitLinkage | `boolean`                                | 是否开启容器内单位联动 |
 | getNewItem  | `(index: number) => Record<string, any>` | 新增行默认数据生成函数 |
 | style       | `Record<string, any>`                    | 自定义样式             |

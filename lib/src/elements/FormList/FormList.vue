@@ -95,11 +95,13 @@
 
 <script setup lang="ts">
 import { cloneDeep, isEqual, set } from 'lodash'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, provide, ref, watch } from 'vue'
 import { FormItem, FormItemGroup } from '@/components'
 import { useFormInstance, useUI } from '@/hooks'
+import { $unitLinkage } from '@/symbol'
 import type { ComponentBaseProps, FormItemType } from '@/types'
 import { deepParse, ns } from '@/utils'
+import type { UnitLinkageContext } from '../InputNumber/types'
 
 const { Button, Card } = useUI()
 
@@ -113,6 +115,7 @@ export interface Props extends ComponentBaseProps {
   name?: string
   disabled?: boolean
   getNewItem?: (index: number) => Record<string, any>
+  unitLinkage?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -131,6 +134,14 @@ const cIndex = ref(0)
 const listSnapshot = ref<Record<string, any>[]>([])
 
 const formInstance = useFormInstance()
+
+// 容器内开启联动后，数字组件会注册到该上下文并在单位变化时同步
+const unitLinkageContext: UnitLinkageContext = {
+  enabled: computed(() => Boolean(props.unitLinkage)),
+  fields: new Set()
+}
+
+provide($unitLinkage, unitLinkageContext)
 
 // 使用 computed 包装 getter 方法，保持响应式
 const design = computed(() => formInstance?.getDesign() ?? false)

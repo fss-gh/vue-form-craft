@@ -14,7 +14,8 @@ export default {
       minLines: 0,
       maxLines: 999,
       allowAdd: true,
-      allowReduce: true
+      allowReduce: true,
+      unitLinkage: false
     }
   },
   items: [
@@ -108,6 +109,12 @@ export default {
       label: '允许删除行',
       name: 'componentProps.allowReduce',
       component: 'Switch'
+    },
+    {
+      label: '单位联动',
+      name: 'componentProps.unitLinkage',
+      component: 'Switch',
+      help: '开启后，容器内支持该单位的数字组件会同步切换单位'
     },
     {
       label: '新增行的初始数据',

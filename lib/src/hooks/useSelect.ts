@@ -115,14 +115,28 @@ const useSelect = (props: SelectProps) => {
   )
 
   const selectChange = (val: any) => {
-    const { multiple, name } = props
+    const { multiple, tags, name } = props
 
-    const valueData =
-      multiple && Array.isArray(val)
-        ? //多选就过滤出vals对应的源数据
-          currentOptions.value.filter((item) => val.includes(item.value))
-        : //单选找到单项对应的源数据
-          currentOptions.value.find((item) => item.value === val) || {}
+    // 标签模式本质上是多选，并需要把自定义标签也写入 selectData
+    const isMultiple = multiple || tags
+
+    let valueData: any
+
+    if (isMultiple && Array.isArray(val)) {
+      if (tags) {
+        const optionMap = new Map(currentOptions.value.map((item) => [item.value, item]))
+
+        valueData = val.map(
+          (item) => optionMap.get(item) || { label: item, value: item, disabled: false }
+        )
+      } else {
+        //多选就过滤出vals对应的源数据
+        valueData = currentOptions.value.filter((item) => val.includes(item.value))
+      }
+    } else {
+      //单选找到单项对应的源数据
+      valueData = currentOptions.value.find((item) => item.value === val) || {}
+    }
 
     //如果接到了selectData，给顶级组件保存当前值对应得数据源
     if (formInstance?.getSelectData() && name) {

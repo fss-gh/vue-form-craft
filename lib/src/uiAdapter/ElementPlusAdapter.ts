@@ -41,6 +41,7 @@ import type {
   MessageBoxOptions,
   MessageOptions,
   PopoverProtocol,
+  SelectProtocol,
   UIAdapter
 } from '@/types/uiAdapter'
 import ns from '@/utils/ns'
@@ -225,16 +226,25 @@ const ElementPlusAdapter: UIAdapter = {
 
   Select: defineComponent(
     (_, { slots, attrs }) => {
-      const propsAttrs = attrs as any
+      const propsAttrs = attrs as SelectProtocol['props']
 
-      return () =>
-        h(
+      return () => {
+        const multiple = propsAttrs.multiple || propsAttrs.tags
+        const filterable = propsAttrs.filterable || propsAttrs.tags
+        const optionList = propsAttrs.options ?? []
+
+        return h(
           ElSelect,
-          attrs,
+          {
+            ...omit(attrs, ['options', 'multiple', 'filterable', 'tags', 'allowCreate']),
+            multiple,
+            filterable,
+            allowCreate: propsAttrs.tags
+          },
           propsAttrs.options
             ? {
               default: () =>
-                propsAttrs.options.map((option: any) =>
+                optionList.map((option) =>
                   h(ElOption, {
                     key: option.value,
                     label: option.label,
@@ -246,6 +256,7 @@ const ElementPlusAdapter: UIAdapter = {
             }
             : slots
         )
+      }
     },
     { inheritAttrs: false }
   ),

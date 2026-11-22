@@ -276,6 +276,8 @@ export interface SelectProtocol {
     clearable?: boolean
     multiple?: boolean
     filterable?: boolean
+    /** 标签模式：支持选择多个标签或输入自定义标签 */
+    tags?: boolean
     size?: 'large' | 'default' | 'small'
     loading?: boolean
     'onUpdate:modelValue'?: (value: any) => void

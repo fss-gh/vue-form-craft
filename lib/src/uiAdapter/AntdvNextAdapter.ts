@@ -483,15 +483,17 @@ const AntdvNextAdapter: UIAdapter = {
               'onUpdate:modelValue',
               'clearable',
               'filterable',
-              'multiple'
+              'multiple',
+              'tags'
             ]),
             value: propsAttrs.modelValue,
             'onUpdate:value': (value: any) => {
               propsAttrs['onUpdate:modelValue']?.(value)
             },
             allowClear: propsAttrs.clearable,
-            showSearch: propsAttrs.filterable,
-            mode: propsAttrs.multiple ? 'multiple' : undefined,
+            showSearch: propsAttrs.filterable || propsAttrs.tags,
+            optionFilterProp: 'label',
+            mode: propsAttrs.tags ? 'tags' : propsAttrs.multiple ? 'multiple' : undefined,
             loading: propsAttrs.loading,
             size: normalizeSize(propsAttrs.size)
           },

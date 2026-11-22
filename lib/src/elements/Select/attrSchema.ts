@@ -14,7 +14,9 @@ export default {
         { label: '选项2', value: 'value2' },
         { label: '选项3', value: 'value3' }
       ],
-      placeholder: '请选择...'
+      placeholder: '请选择...',
+      filterable: true,
+      tags: false
     }
   },
   items: [
@@ -50,12 +52,22 @@ export default {
               componentProps: {
                 autocomplete: 'new-password'
               }
-      },
+            },
             {
               label: '禁用',
               name: 'componentProps.disabled',
               component: 'Switch'
-      },
+            },
+            {
+              label: '是否搜索',
+              name: 'componentProps.filterable',
+              component: 'Switch',
+              componentProps: {
+                activeText: '开启',
+                inactiveText: '关闭'
+              },
+              help: '开启后可在下拉选项中输入关键字进行筛选'
+            },
             {
               label: '选择模式',
               name: 'componentProps.multiple',
@@ -64,7 +76,17 @@ export default {
                 activeText: '多选',
                 inactiveText: '单选'
               }
-      }
+            },
+            {
+              label: '标签模式',
+              name: 'componentProps.tags',
+              component: 'Switch',
+              componentProps: {
+                activeText: '开启',
+                inactiveText: '关闭'
+              },
+              help: '开启后可从选项中选取多个标签，也支持输入自定义标签；标签模式会自动开启搜索'
+            }
           ]
         },
         {

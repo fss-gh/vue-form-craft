@@ -21,7 +21,9 @@
 | name | `string` | 字段名（用于写入 selectData） |
 | placeholder | `string` | 占位符 |
 | disabled | `boolean` | 禁用 |
-| multiple | `boolean` | 多选模式 |
+| multiple | `boolean` | 多选模式；标签模式开启时会自动按多选处理 |
+| filterable | `boolean` | 是否开启搜索筛选，默认 `true` |
+| tags | `boolean` | 标签模式；可从选项中选择多个标签，也可输入自定义标签，绑定值为数组 |
 | onChange | `(value: any) => void` | 值变更 |
 | onBlur | `(e: Event) => void` | 失焦 |
 | onFocus | `(e: Event) => void` | 聚焦 |

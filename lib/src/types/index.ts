@@ -113,6 +113,10 @@ export type Direction = 'horizontal' | 'vertical'
 export interface SelectProps {
   options?: { label: any; value: any; disabled?: boolean }[]
   multiple?: boolean
+  /** 是否开启搜索筛选 */
+  filterable?: boolean
+  /** 标签模式：支持从选项中选择多个标签，也支持输入自定义标签 */
+  tags?: boolean
   mode?: 'static' | 'remote'
   api?: SchemaApi
   name?: string

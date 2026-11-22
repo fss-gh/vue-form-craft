@@ -1,0 +1,82 @@
+[
+  {
+    "name": "长度",
+    "units": [
+      { "label": "毫米", "value": "mm", "multiplier": 1 },
+      { "label": "厘米", "value": "cm", "multiplier": 10 },
+      { "label": "米", "value": "m", "multiplier": 1000 },
+      { "label": "千米", "value": "km", "multiplier": 1000000 }
+    ]
+  },
+  {
+    "name": "重量",
+    "units": [
+      { "label": "克", "value": "g", "multiplier": 1 },
+      { "label": "千克", "value": "kg", "multiplier": 1000 },
+      { "label": "吨", "value": "t", "multiplier": 1000000 }
+    ]
+  },
+  {
+    "name": "面积",
+    "units": [
+      { "label": "平方毫米", "value": "mm2", "multiplier": 0.000001 },
+      { "label": "平方厘米", "value": "cm2", "multiplier": 0.0001 },
+      { "label": "平方米", "value": "m2", "multiplier": 1 },
+      { "label": "平方千米", "value": "km2", "multiplier": 1000000 }
+    ]
+  },
+  {
+    "name": "体积",
+    "units": [
+      { "label": "毫升", "value": "ml", "multiplier": 0.001 },
+      { "label": "升", "value": "l", "multiplier": 1 },
+      { "label": "立方米", "value": "m3", "multiplier": 1000 }
+    ]
+  },
+  {
+    "name": "时间",
+    "units": [
+      { "label": "毫秒", "value": "ms", "multiplier": 0.001 },
+      { "label": "秒", "value": "s", "multiplier": 1 },
+      { "label": "分钟", "value": "min", "multiplier": 60 },
+      { "label": "小时", "value": "h", "multiplier": 3600 },
+      { "label": "天", "value": "d", "multiplier": 86400 }
+    ]
+  },
+  {
+    "name": "数据存储",
+    "units": [
+      { "label": "字节", "value": "B", "multiplier": 1 },
+      { "label": "KB", "value": "KB", "multiplier": 1024 },
+      { "label": "MB", "value": "MB", "multiplier": 1048576 },
+      { "label": "GB", "value": "GB", "multiplier": 1073741824 }
+    ]
+  },
+  {
+    "name": "电流",
+    "units": [
+      { "label": "微安", "value": "uA", "multiplier": 0.000001 },
+      { "label": "毫安", "value": "mA", "multiplier": 0.001 },
+      { "label": "安培", "value": "A", "multiplier": 1 },
+      { "label": "千安", "value": "kA", "multiplier": 1000 }
+    ]
+  },
+  {
+    "name": "电压",
+    "units": [
+      { "label": "微伏", "value": "uV", "multiplier": 0.000001 },
+      { "label": "毫伏", "value": "mV", "multiplier": 0.001 },
+      { "label": "伏特", "value": "V", "multiplier": 1 },
+      { "label": "千伏", "value": "kV", "multiplier": 1000 }
+    ]
+  },
+  {
+    "name": "电阻",
+    "units": [
+      { "label": "毫欧", "value": "mΩ", "multiplier": 0.001 },
+      { "label": "欧姆", "value": "Ω", "multiplier": 1 },
+      { "label": "千欧", "value": "kΩ", "multiplier": 1000 },
+      { "label": "兆欧", "value": "MΩ", "multiplier": 1000000 }
+    ]
+  }
+]

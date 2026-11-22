@@ -9,6 +9,7 @@ export default {
   type: 'high',
   order: 30,
   attrSchema: {
+    submitBtn: false,
     labelWidth: 110,
     size: 'small',
     initialValues: {

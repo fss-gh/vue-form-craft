@@ -53,7 +53,6 @@
 
           <template #content>
             <div :class="ns('latex-template-popover')" role="listbox" aria-label="公式模板">
-              <div :class="ns('latex-template-header')">选择公式模板</div>
               <button
                 v-for="(item, index) in templateItems"
                 :key="index"

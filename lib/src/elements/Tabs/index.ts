@@ -10,6 +10,7 @@ export default {
   type: 'layout',
   order: 4,
   attrSchema: {
+    submitBtn: false,
     size: 'small',
     labelAlign: 'top',
     initialValues: {

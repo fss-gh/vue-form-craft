@@ -3,6 +3,7 @@ import type { FormSchema } from '@/types'
 export default {
   size: 'small',
   labelAlign: 'top',
+  submitBtn: false,
   initialValues: {
     componentProps: {
       width: 700,
@@ -44,7 +45,7 @@ export default {
     {
       label: '生成图片格式',
       component: 'Radio',
-              name: 'componentProps.format',
+      name: 'componentProps.format',
       componentProps: {
         mode: 'static',
         options: [

@@ -1,10 +1,23 @@
 import { mount } from '@vue/test-utils'
 import { computed } from 'vue'
 import { FormDesign } from '@/components'
+import { $uiAdapter } from '@/symbol'
+import type { UIAdapter } from '@/types'
 import { ns, wait } from '@/utils'
 
-export function FormDesignTest() {
-  const wrapper = mount(FormDesign)
+export function FormDesignTest(ui?: UIAdapter) {
+  const wrapper = mount(
+    FormDesign,
+    ui
+      ? {
+          global: {
+            provide: {
+              [$uiAdapter]: ui
+            }
+          }
+        }
+      : {}
+  )
   const leftWrapper = wrapper.find(`.${ns('form-design-left')}`)
   const rightWrapper = wrapper.find(`.${ns('form-design-right')}`)
   const centerWrapper = wrapper.find(`.${ns('form-design-center')}`)

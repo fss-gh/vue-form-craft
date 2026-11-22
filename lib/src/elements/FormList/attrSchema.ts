@@ -5,7 +5,7 @@ export default {
   labelAlign: 'top',
   scrollToError: true,
   size: 'small',
-  submitBtn: true,
+  submitBtn: false,
   initialValues: {
     items: [],
     componentProps: {

@@ -11,6 +11,7 @@ export default {
   attrSchema: {
     size: 'small',
     labelAlign: 'top',
+    submitBtn: false,
     initialValues: {
       componentProps: {
         columns: 2,

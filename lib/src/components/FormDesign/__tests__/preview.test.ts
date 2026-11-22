@@ -1,4 +1,5 @@
 import { flushPromises } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import aliEcs from '@/templates/aliEcs'
 import { FormDesignTest, wait } from '@/utils'
@@ -77,5 +78,48 @@ describe('《表单设计器》预览功能测试', async () => {
     const payTypeItem = currentSchema.items?.[0]?.items?.[0]
     expect(payTypeItem?.name).toBe('payType')
     expect(payTypeItem?.alert).toBeUndefined()
+  })
+
+  it('预览支持 PC、平板和移动端模式切换', async () => {
+    const { previewBtn, wrapper } = FormDesignTest()
+
+    await previewBtn.trigger('click')
+    await flushPromises()
+    await wait(500)
+
+    const previewDialog = wrapper.findComponent({ name: 'Preview' })
+
+    expect(previewDialog.exists()).toBe(true)
+
+    const modeButtons = previewDialog.findAll('.vfc-preview-mode-btn')
+
+    expect(modeButtons).toHaveLength(3)
+    expect(modeButtons.map((button) => button.attributes('data-mode'))).toEqual([
+      'pc',
+      'tablet',
+      'mobile'
+    ])
+    expect(modeButtons[0]?.attributes('aria-pressed')).toBe('true')
+    expect(previewDialog.find('[data-device="pc"]').exists()).toBe(true)
+    expect(previewDialog.find('.preview-FormRender').exists()).toBe(true)
+
+    await modeButtons[1]?.trigger('click')
+    await nextTick()
+
+    expect(modeButtons[1]?.attributes('aria-pressed')).toBe('true')
+    expect(modeButtons[0]?.attributes('aria-pressed')).toBe('false')
+    expect(previewDialog.find('[data-device="tablet"]').exists()).toBe(true)
+    expect(previewDialog.find('.vfc-preview-device-tablet').exists()).toBe(true)
+    expect(previewDialog.find('.preview-FormRender').exists()).toBe(true)
+
+    await modeButtons[2]?.trigger('click')
+    await nextTick()
+
+    expect(modeButtons[2]?.attributes('aria-pressed')).toBe('true')
+    expect(previewDialog.find('[data-device="mobile"]').exists()).toBe(true)
+    expect(previewDialog.find('.vfc-preview-device-mobile').exists()).toBe(true)
+    expect(previewDialog.find('.preview-FormRender').exists()).toBe(true)
+
+    wrapper.unmount()
   })
 })

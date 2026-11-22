@@ -6,6 +6,7 @@ import Linkages from './Linkages/Linkages.vue'
 import Options from './Options/index.vue'
 import Rules from './Rules/Rules.vue'
 import StyleEditor from './StyleEditor/index.vue'
+import UnitDefault from './UnitDefault.vue'
 
 export default (app: any) => {
   app.component('FormDesign-InitialValues', InitialValues)
@@ -16,4 +17,5 @@ export default (app: any) => {
   app.component('FormDesign-Linkages', Linkages)
   app.component('FormDesign-Basic', Basic)
   app.component('FormDesign-Options', Options)
+  app.component('FormDesign-UnitDefault', UnitDefault)
 }

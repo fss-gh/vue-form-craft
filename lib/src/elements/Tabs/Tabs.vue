@@ -8,7 +8,7 @@
         :name="tab.name"
         :lazy="tab.componentProps?.lazy"
       >
-        <FormItemGroup :list="tab.items!" :designKey="tab.designKey!" />
+        <TabContent :tab-name="tab.name" :get-tabs="getTabs" />
       </TabPane>
     </Tabs>
 
@@ -38,10 +38,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { VDraggable as Draggable } from '@/utils/draggable'
-import { FormItemGroup } from '@/components'
 import { useDesignInstance, useFormInstance, useUI } from '@/hooks'
 import type { ComponentBaseProps, FormItemType } from '@/types'
 import { ns } from '@/utils'
+import TabContent from './TabContent.vue'
 
 const { Tabs, TabPane } = useUI()
 
@@ -54,6 +54,9 @@ const props = defineProps<
 >()
 
 const children = computed(() => props.formItemProps.items || [])
+
+// 传递稳定 getter，避免 UI 库缓存 TabPane 内容后子项数据无法更新
+const getTabs = () => children.value
 
 const activeKey = ref<string>(props.defaultKey)
 

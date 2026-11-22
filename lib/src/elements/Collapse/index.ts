@@ -12,6 +12,7 @@ export default {
   attrSchema: {
     size: 'small',
     labelAlign: 'top',
+    submitBtn: false,
     initialValues: {
       items: [
         {
@@ -20,13 +21,13 @@ export default {
           component: 'CollapseItem',
           componentProps: { checked: true },
           items: []
-      },
+        },
         {
           label: '面板2',
           name: 'name2',
           component: 'CollapseItem',
           items: []
-      }
+        }
       ]
     },
     items: [

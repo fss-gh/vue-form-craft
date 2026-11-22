@@ -3,6 +3,7 @@ import type { FormSchema } from '@/types'
 export default {
   size: 'small',
   labelAlign: 'top',
+  submitBtn: false,
   initialValues: {
     componentProps: {
       text: '这是一段文本'

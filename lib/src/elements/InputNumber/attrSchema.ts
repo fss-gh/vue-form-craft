@@ -1,4 +1,5 @@
 import type { FormSchema } from 'vue-form-craft'
+import { defaultUnitCategorySelectOptions } from './units'
 
 export default {
   labelWidth: 110,
@@ -8,9 +9,12 @@ export default {
   submitBtn: false,
   initialValues: {
     componentProps: {
-      min: 1,
-      max: 999,
-      step: 1
+      min: -999999999,
+      max: 999999999,
+      step: 1,
+      unitEnabled: false,
+      unitCategory: '',
+      defaultUnit: ''
     }
   },
   items: [
@@ -43,22 +47,22 @@ export default {
               label: '禁用',
               name: 'componentProps.disabled',
               component: 'Switch'
-      },
+            },
             {
               label: '只读',
               name: 'componentProps.readonly',
               component: 'Switch'
-      },
+            },
             {
               label: '最小值',
               name: 'componentProps.min',
               component: 'InputNumber'
-      },
+            },
             {
               label: '最大值',
               name: 'componentProps.max',
               component: 'InputNumber'
-      },
+            },
             {
               label: '步长',
               name: 'componentProps.step',
@@ -66,7 +70,32 @@ export default {
               componentProps: {
                 min: 1
               }
-      }
+            },
+            {
+              label: '附带单位',
+              name: 'componentProps.unitEnabled',
+              component: 'Switch'
+            },
+            {
+              label: '单位分类',
+              name: 'componentProps.unitCategory',
+              component: 'Select',
+              componentProps: {
+                options: defaultUnitCategorySelectOptions,
+                clearable: true,
+                placeholder: '请选择单位分类'
+              },
+              when: '{{ $values.componentProps.unitEnabled === true }}'
+            },
+            {
+              label: '默认单位',
+              name: 'componentProps.defaultUnit',
+              component: 'Custom',
+              componentProps: {
+                componentName: 'FormDesign-UnitDefault'
+              },
+              when: '{{ $values.componentProps.unitEnabled === true }}'
+            }
           ]
         },
         {
@@ -118,19 +147,19 @@ export default {
               labelAlign: 'top',
               name: 'componentProps.onChange',
               component: 'FunctionEditor'
-      },
+            },
             {
               label: '失去焦点时 (blur)',
               labelAlign: 'top',
               name: 'componentProps.onBlur',
               component: 'FunctionEditor'
-      },
+            },
             {
               label: '获得焦点时 (focus)',
               labelAlign: 'top',
               name: 'componentProps.onFocus',
               component: 'FunctionEditor'
-      }
+            }
           ]
         },
         {

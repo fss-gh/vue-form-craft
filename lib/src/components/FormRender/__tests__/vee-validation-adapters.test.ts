@@ -6,7 +6,6 @@ import { $uiAdapter } from '@/symbol'
 import type { FormSchema } from '@/types'
 import type { UIAdapter } from '@/types/uiAdapter'
 import AntdvNextAdapter from '@/uiAdapter/AntdvNextAdapter'
-import VeanUIAdapter from '@/uiAdapter/VeanUIAdapter'
 
 const schema: FormSchema = {
   validationEngine: 'vee-validate',
@@ -35,12 +34,9 @@ const mountWithAdapter = (adapter: UIAdapter, modelValue: Record<string, any> = 
     }
   })
 
-describe.each([
-  ['Antdv Next', AntdvNextAdapter],
-  ['Vean UI', VeanUIAdapter]
-])('%s + VeeValidate', (_name, adapter) => {
+describe('Antdv Next + VeeValidate', () => {
   it('blur 校验错误可以显示并在修正后清除', async () => {
-    const wrapper = mountWithAdapter(adapter, { username: 'ab' })
+    const wrapper = mountWithAdapter(AntdvNextAdapter, { username: 'ab' })
     await nextTick()
 
     await wrapper.find('.Input-username input').trigger('focusout')

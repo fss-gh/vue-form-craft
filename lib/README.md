@@ -14,7 +14,7 @@ AI 驱动的 Vue3 表单工具，核心由 `FormDesign`（可视化设计器） 
 - 支持校验规则（`required/min/max/pattern/builtin/custom/jsExpr`）
 - 可选 VeeValidate 校验引擎，Schema 与使用方式保持兼容
 - 支持 AI 辅助生成/修改表单 Schema
-- 支持扩展组件与多 UI 适配器（Element Plus / Antdv Next / Vean UI）
+- 支持扩展组件与多 UI 适配器（Element Plus / Antdv Next）
 
 ## 项目结构
 
@@ -63,31 +63,6 @@ app.use(VueFormCraft, {
   ui: AntdvNextAdapter
 })
 ```
-
-如需切换为 Vean UI（需自行安装 `@vean/ui`）：
-
-```bash
-npm i @vean/ui
-```
-
-```ts
-import { SConfigProvider } from '@vean/ui'
-import '@vean/ui/styles.css'
-import { createApp, h } from 'vue'
-import VueFormCraft, { VeanUIAdapter } from 'vue-form-craft'
-import App from './App.vue'
-
-const app = createApp({
-  render: () => h(SConfigProvider, null, { default: () => h(App) })
-})
-
-app.use(VueFormCraft, {
-  ui: VeanUIAdapter
-})
-app.mount('#app')
-```
-
-> Vean UI 适配器依赖 `SConfigProvider` 提供主题、Toast 和 Dialog 上下文，因此必须将它放在 `FormDesign` / `FormRender` 的祖先节点；`Message.success` 等命令式消息也需要它。样式文件 `@vean/ui/styles.css` 需要引入一次。
 
 #### 可选：VeeValidate 校验引擎
 

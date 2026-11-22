@@ -6,7 +6,6 @@ import { $uiAdapter } from '@/symbol'
 import type { FormSchema } from '@/types'
 import type { UIAdapter } from '@/types/uiAdapter'
 import AntdvNextAdapter from '@/uiAdapter/AntdvNextAdapter'
-import VeanUIAdapter from '@/uiAdapter/VeanUIAdapter'
 import { FormDesignTest, ns, wait } from '@/utils'
 
 const createSchema = (componentProps: Record<string, any>): FormSchema => ({
@@ -197,12 +196,9 @@ describe('Latex 公式组件', () => {
   })
 })
 
-describe.each([
-  ['Antdv Next', AntdvNextAdapter],
-  ['Vean UI', VeanUIAdapter]
-])('%s 下的 Latex 组件', (_name, adapter) => {
+describe('Antdv Next 下的 Latex 组件', () => {
   it('点击编辑按钮后可输入公式并确认', async () => {
-    const wrapper = mountLatexWithAdapter(adapter, {
+    const wrapper = mountLatexWithAdapter(AntdvNextAdapter, {
       expression: '\\frac{a}{b}',
       editable: true
     })
@@ -230,7 +226,7 @@ describe.each([
   })
 
   it('可通过后缀按钮打开模板弹层并选择模板', async () => {
-    const wrapper = mountLatexWithAdapter(adapter, {
+    const wrapper = mountLatexWithAdapter(AntdvNextAdapter, {
       expression: '\\frac{a}{b}',
       editable: true,
       templates: [{ label: '根式', expression: '\\sqrt{x}' }]

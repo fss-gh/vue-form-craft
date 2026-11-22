@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { computed } from 'vue'
 import { FormDesign } from '@/components'
 import { $uiAdapter } from '@/symbol'
-import type { UIAdapter } from '@/types'
+import type { UIAdapter } from '@/types/uiAdapter'
 import { ns, wait } from '@/utils'
 
 export function FormDesignTest(ui?: UIAdapter) {

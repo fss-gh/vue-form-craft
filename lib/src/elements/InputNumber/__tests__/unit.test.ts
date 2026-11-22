@@ -7,7 +7,6 @@ import { $uiAdapter } from '@/symbol'
 import type { FormSchema } from '@/types'
 import type { UIAdapter } from '@/types/uiAdapter'
 import AntdvNextAdapter from '@/uiAdapter/AntdvNextAdapter'
-import VeanUIAdapter from '@/uiAdapter/VeanUIAdapter'
 import { FormDesignTest, wait } from '@/utils'
 import { getDefaultUnitOptionsByCategory } from '../units'
 
@@ -123,12 +122,9 @@ describe('InputNumber 单位功能', () => {
   })
 })
 
-describe.each([
-  ['Antdv Next', AntdvNextAdapter],
-  ['Vean UI', VeanUIAdapter]
-])('%s 下的 InputNumber 单位功能', (_name, adapter) => {
+describe('Antdv Next 下的 InputNumber 单位功能', () => {
   it('可通过后缀按钮选择分类和单位', async () => {
-    const wrapper = mountInputNumberWithAdapter(adapter, { length: 100, length_unit: 'cm' }, {
+    const wrapper = mountInputNumberWithAdapter(AntdvNextAdapter, { length: 100, length_unit: 'cm' }, {
       unitEnabled: true,
       unitCategory: '长度',
       defaultUnit: 'cm'

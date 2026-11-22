@@ -30,10 +30,6 @@ $textColor3: var(--#{$namespace}-color-text-regular, #606266);
     display: none;
   }
 
-  &.hide-label > .vfc-vean-form-item__label {
-    display: none !important;
-  }
-
   &.hide-label > .ant-form-item-row > .ant-form-item-label {
     display: none;
   }
